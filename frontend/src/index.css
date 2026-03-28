@@ -105,6 +105,103 @@ body {
 .hover\:text-zinc-100:hover { color: #f4f4f5; }
 .hover\:brightness-110:hover { filter: brightness(1.1); }
 
+/* Scroll animations for service cards */
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px) scale(0.8);
+  }
+  70% {
+    transform: translateX(10px) scale(1.02);
+  }
+  85% {
+    transform: translateX(-5px) scale(0.98);
+  }
+  95% {
+    transform: translateX(2px) scale(1.005);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100px) scale(0.8);
+  }
+  70% {
+    transform: translateX(-10px) scale(1.02);
+  }
+  85% {
+    transform: translateX(5px) scale(0.98);
+  }
+  95% {
+    transform: translateX(-2px) scale(1.005);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes steelStop {
+  0% {
+    opacity: 0;
+    transform: translateX(-150px) scale(0.7) rotate(-2deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(15px) scale(1.05) rotate(1deg);
+  }
+  75% {
+    transform: translateX(-8px) scale(0.98) rotate(-0.5deg);
+  }
+  85% {
+    transform: translateX(4px) scale(1.02) rotate(0.3deg);
+  }
+  92% {
+    transform: translateX(-2px) scale(0.995) rotate(-0.1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1) rotate(0);
+  }
+}
+
+@keyframes steelStopReverse {
+  0% {
+    opacity: 0;
+    transform: translateX(150px) scale(0.7) rotate(2deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(-15px) scale(1.05) rotate(-1deg);
+  }
+  75% {
+    transform: translateX(8px) scale(0.98) rotate(0.5deg);
+  }
+  85% {
+    transform: translateX(-4px) scale(1.02) rotate(-0.3deg);
+  }
+  92% {
+    transform: translateX(2px) scale(0.995) rotate(0.1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1) rotate(0);
+  }
+}
+
+.animate-slide-left {
+  animation: steelStop 0.8s ease-out forwards;
+}
+
+.animate-slide-right {
+  animation: steelStopReverse 0.8s ease-out forwards;
+}
+
 /* Gradients */
 .from-background { --tw-gradient-from: #131314; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(19, 19, 20, 0)); }
 .to-transparent { --tw-gradient-to: transparent; }

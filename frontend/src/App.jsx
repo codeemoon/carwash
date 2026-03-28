@@ -9,18 +9,40 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState('')
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0)
+  const heroImages = [
+    '/poster/p1.webp',
+    '/poster/p2.webp',
+    '/poster/p3.webp',
+    '/poster/p4.webp'
+  ]
+
+  // Hero image slider
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroIndex(prev => (prev + 1) % heroImages.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
   const [formData, setFormData] = useState({
     name: '',
     number: '',
     carModel: '',
     address: '',
-    landmark: ''
+    landmark: '',
+    plan: '',
+    date: '',
+    time: ''
   })
 
   // Count-up animation for stats
   const [hasAnimated, setHasAnimated] = useState(false)
   const [counts, setCounts] = useState({ customers: 0, cars: 0, years: 0 })
   const statsRef = useRef(null)
+
+  // Services scroll animation
+  const [visibleServices, setVisibleServices] = useState([])
+  const servicesRef = useRef(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -55,6 +77,28 @@ function App() {
     return () => observer.disconnect()
   }, [hasAnimated])
 
+  // Services scroll animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = parseInt(entry.target.getAttribute('data-service-index'))
+            if (!visibleServices.includes(index)) {
+              setVisibleServices(prev => [...prev, index])
+            }
+          }
+        })
+      },
+      { threshold: 0.2 }
+    )
+    
+    const serviceCards = document.querySelectorAll('[data-service-index]')
+    serviceCards.forEach(card => observer.observe(card))
+    
+    return () => observer.disconnect()
+  }, [visibleServices])
+
   const handleBookClick = (packageName = '') => {
     setSelectedPackage(packageName)
     setIsBookingOpen(true)
@@ -63,12 +107,12 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault()
     const phoneNumber = '9685661519'
-    const message = `Hello Shree Car Wash,\n\nI would like to book the ${selectedPackage || 'Service'}.\n\n*Name:* ${formData.name}\n*Phone:* ${formData.number}\n*Car Model:* ${formData.carModel}\n*Address:* ${formData.address}\n*Landmark:* ${formData.landmark}\n\nPlease confirm my booking.`
+    const message = `Hello Shree Car Wash,\n\nI would like to book the ${selectedPackage || formData.plan || 'Service'}.\n\n*Name:* ${formData.name}\n*Phone:* ${formData.number}\n*Car Model:* ${formData.carModel}\n*Plan:* ${formData.plan}\n*Date:* ${formData.date}\n*Time:* ${formData.time}\n*Address:* ${formData.address}\n*Landmark:* ${formData.landmark}\n\nPlease confirm my booking.`
     
     const whatsappUrl = `https://wa.me/91${phoneNumber}?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
     setIsBookingOpen(false)
-    setFormData({ name: '', number: '', carModel: '', address: '', landmark: '' })
+    setFormData({ name: '', number: '', carModel: '', address: '', landmark: '', plan: '', date: '', time: '' })
   }
 
   return (
@@ -113,9 +157,9 @@ function App() {
       <header className="relative min-h-[60vh] md:h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            className="w-full h-full object-cover opacity-40" 
-            alt="close-up of a high-end luxury sports car in a dark professional studio with cinematic rim lighting and reflections" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMzzSO4ZARtFPeh-sMU7YuLghrCJ8SxOXORwfwNvvQu3EARBUr9pfJUjo5p8U4pzIjPRH_usuQrhMwZLc_uf1Dybkrr2KYaixuN3PczcKyoFixKe6MUXCPf49eTkK0bsZI378pNbKBTgA_p8SliTwvIoju8h80JQoKtIxtly0RqFInTtdReBJ8ycmfbk2LZj1ahTNgLzKtlZEtzlXwJOVYa_tI5a07nk3EBcil61cOCArJ0z7t54d9lOgbzPeNYTyMDXzL65KntQ" 
+            className="w-full h-full object-cover opacity-40 transition-opacity duration-700" 
+            alt="Car showcase" 
+            src={heroImages[currentHeroIndex]} 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
         </div>
@@ -133,7 +177,10 @@ function App() {
                 <MessageCircle className="w-3 h-3 md:w-5 md:h-5" />
                 Book Now on WhatsApp
               </button>
-              <button className="bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold px-4 md:px-10 py-2 md:py-5 rounded-full text-xs md:text-lg transition-all hover:bg-surface-variant flex items-center justify-center gap-2">
+              <button 
+                onClick={() => window.open('tel:9685661519')}
+                className="bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold px-4 md:px-10 py-2 md:py-5 rounded-full text-xs md:text-lg transition-all hover:bg-surface-variant flex items-center justify-center gap-2"
+              >
                 <Phone className="w-3 h-3 md:w-5 md:h-5" />
                 Call Now
               </button>
@@ -141,6 +188,54 @@ function App() {
           </div>
         </div>
       </header>
+
+      {/* About Us Section */}
+      <section className="py-12 md:py-16 bg-surface-container-low">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-8 md:mb-12">About Us</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <p className="text-on-surface-variant text-lg leading-relaxed mb-6">
+                Welcome to <span className="text-primary font-bold">Shree Car Wash & Detailing</span>, Raipur's premier doorstep car cleaning service. 
+                We bring professional showroom-quality car care directly to your location - whether it's your home, office, or any convenient spot.
+              </p>
+              <p className="text-on-surface-variant text-lg leading-relaxed mb-6">
+                Our expert team uses premium products and advanced techniques to ensure your vehicle gets the royal treatment it deserves. 
+                From basic wash to premium detailing, we offer a range of services tailored to your needs.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="text-primary w-5 h-5" />
+                  <span className="text-zinc-300">Professional Team</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="text-primary w-5 h-5" />
+                  <span className="text-zinc-300">Premium Products</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="text-primary w-5 h-5" />
+                  <span className="text-zinc-300">Doorstep Service</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="text-primary w-5 h-5" />
+                  <span className="text-zinc-300">Affordable Pricing</span>
+                </div>
+              </div>
+            </div>
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-zinc-800">
+              <video 
+                className="w-full h-full object-cover"
+                src="/our_videos/vid 2.mp4" 
+                controls
+                playsInline
+                autoPlay
+                muted
+                loop
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Trust Stats */}
       <section ref={statsRef} className="py-8 md:py-12 bg-surface">
@@ -177,53 +272,109 @@ function App() {
             <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">Our Services</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {/* Service 1 */}
-            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <Sparkles className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
-              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Foam Washing</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Thick snow foam treatment jo bina scratches ke mitti aur dust ko nikal deta hai.</p>
+            {/* Service 1 - Foam Washing */}
+            <div 
+              data-service-index="0"
+              className={`p-4 md:p-8 rounded-lg hover:bg-surface-container-highest transition-colors relative overflow-hidden group ${visibleServices.includes(0) ? 'animate-slide-left' : 'opacity-0'}`}
+              style={{ backgroundImage: `url('/card photo/foam wash.webp')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            >
+              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/50 transition-colors"></div>
+              <div className="relative z-10">
+                <Sparkles className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+                <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Foam Washing</h4>
+                <p className="text-zinc-300 text-sm leading-relaxed">Thick snow foam treatment jo bina scratches ke mitti aur dust ko nikal deta hai.</p>
+              </div>
             </div>
-            {/* Service 2 */}
-            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <Car className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
-              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Tyre Cleaning & Polishing</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Mud ki deep cleaning aur tyres ko ek naye jaisi glossy black finish dena.</p>
+            {/* Service 2 - Tyre Cleaning */}
+            <div 
+              data-service-index="1"
+              className={`p-4 md:p-8 rounded-lg hover:bg-surface-container-highest transition-colors relative overflow-hidden group ${visibleServices.includes(1) ? 'animate-slide-right' : 'opacity-0'}`}
+              style={{ backgroundImage: `url('/card photo/tyre cleaning.webp')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            >
+              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/50 transition-colors"></div>
+              <div className="relative z-10">
+                <Car className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+                <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Tyre Cleaning & Polishing</h4>
+                <p className="text-zinc-300 text-sm leading-relaxed">Mud ki deep cleaning aur tyres ko ek naye jaisi glossy black finish dena.</p>
+              </div>
             </div>
-            {/* Service 3 */}
-            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <Home className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
-              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Interior Deep Vacuum Cleaning</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Seats, carpets aur har chote kone se dhool aur kachre ki complete safai.</p>
+            {/* Service 3 - Interior Deep Vacuum */}
+            <div 
+              data-service-index="2"
+              className={`p-4 md:p-8 rounded-lg hover:bg-surface-container-highest transition-colors relative overflow-hidden group ${visibleServices.includes(2) ? 'animate-slide-left' : 'opacity-0'}`}
+              style={{ backgroundImage: `url('/card photo/deep interior cleaning.webp')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            >
+              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/50 transition-colors"></div>
+              <div className="relative z-10">
+                <Home className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+                <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Interior Deep Vacuum Cleaning</h4>
+                <p className="text-zinc-300 text-sm leading-relaxed">Seats, carpets aur har chote kone se dhool aur kachre ki complete safai.</p>
+              </div>
             </div>
-            {/* Service 4 */}
-            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <Award className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
-              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Exterior Waxing</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Gadi ki body par ek protective layer jo paint ko chamkaati hai aur dhoop se bachati hai.</p>
+            {/* Service 4 - Exterior Waxing */}
+            <div 
+              data-service-index="3"
+              className={`p-4 md:p-8 rounded-lg hover:bg-surface-container-highest transition-colors relative overflow-hidden group ${visibleServices.includes(3) ? 'animate-slide-right' : 'opacity-0'}`}
+              style={{ backgroundImage: `url('/card photo/exteriro waxing.webp')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            >
+              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/50 transition-colors"></div>
+              <div className="relative z-10">
+                <Award className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+                <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Exterior Waxing</h4>
+                <p className="text-zinc-300 text-sm leading-relaxed">Gadi ki body par ek protective layer jo paint ko chamkaati hai aur dhoop se bachati hai.</p>
+              </div>
             </div>
-            {/* Service 5 */}
-            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <Clock className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
-              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Gentle Machine Rubbing</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Professional machine se halke scratches hatana aur paint ki original shine wapas lana.</p>
+            {/* Service 5 - Gentle Machine Rubbing */}
+            <div 
+              data-service-index="4"
+              className={`p-4 md:p-8 rounded-lg hover:bg-surface-container-highest transition-colors relative overflow-hidden group ${visibleServices.includes(4) ? 'animate-slide-left' : 'opacity-0'}`}
+              style={{ backgroundImage: `url('/card photo/gentle machine rubbing.webp')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            >
+              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/50 transition-colors"></div>
+              <div className="relative z-10">
+                <Clock className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+                <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Gentle Machine Rubbing</h4>
+                <p className="text-zinc-300 text-sm leading-relaxed">Professional machine se halke scratches hatana aur paint ki original shine wapas lana.</p>
+              </div>
             </div>
-            {/* Service 6 */}
-            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <CreditCard className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
-              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Glass Cleaning</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Windows aur windshield ki streak-free safai taaki driving ke waqt crystal clear vision mile.</p>
+            {/* Service 6 - Glass Cleaning */}
+            <div 
+              data-service-index="5"
+              className={`p-4 md:p-8 rounded-lg hover:bg-surface-container-highest transition-colors relative overflow-hidden group ${visibleServices.includes(5) ? 'animate-slide-right' : 'opacity-0'}`}
+              style={{ backgroundImage: `url('/card photo/glass cleaning.webp')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            >
+              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/50 transition-colors"></div>
+              <div className="relative z-10">
+                <CreditCard className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+                <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Glass Cleaning</h4>
+                <p className="text-zinc-300 text-sm leading-relaxed">Windows aur windshield ki streak-free safai taaki driving ke waqt crystal clear vision mile.</p>
+              </div>
             </div>
-            {/* Service 7 */}
-            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <Sparkles className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
-              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Gentle Finish</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Microfiber se final touch-up taaki gadi par ek bhi paani ka daag na rahe.</p>
+            {/* Service 7 - Gentle Finish */}
+            <div 
+              data-service-index="6"
+              className={`p-4 md:p-8 rounded-lg hover:bg-surface-container-highest transition-colors relative overflow-hidden group ${visibleServices.includes(6) ? 'animate-slide-left' : 'opacity-0'}`}
+              style={{ backgroundImage: `url('/card photo/gentle wash.webp')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            >
+              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/50 transition-colors"></div>
+              <div className="relative z-10">
+                <Sparkles className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+                <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Gentle Finish</h4>
+                <p className="text-zinc-300 text-sm leading-relaxed">Microfiber se final touch-up taaki gadi par ek bhi paani ka daag na rahe.</p>
+              </div>
             </div>
-            {/* Service 8 */}
-            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <Users className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
-              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Doorstep Service</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Hum aapke ghar ya office pe aapke convenient time pe pahuchte hain.</p>
+            {/* Service 8 - Doorstep Service */}
+            <div 
+              data-service-index="7"
+              className={`p-4 md:p-8 rounded-lg hover:bg-surface-container-highest transition-colors relative overflow-hidden group ${visibleServices.includes(7) ? 'animate-slide-right' : 'opacity-0'}`}
+              style={{ backgroundImage: `url('/card photo/door step service.webp')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            >
+              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/50 transition-colors"></div>
+              <div className="relative z-10">
+                <Users className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+                <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Doorstep Service</h4>
+                <p className="text-zinc-300 text-sm leading-relaxed">Hum aapke ghar ya office pe aapke convenient time pe pahuchte hain.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -358,14 +509,6 @@ function App() {
             <div className="relative aspect-[9/16] rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
               <video 
                 className="w-full h-full object-cover"
-                src="/our_videos/vid 2.mp4" 
-                controls
-                playsInline
-              />
-            </div>
-            <div className="relative aspect-[9/16] rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
-              <video 
-                className="w-full h-full object-cover"
                 src="/our_videos/vid 3.mp4" 
                 controls
                 playsInline
@@ -470,13 +613,19 @@ function App() {
           <MapPin className="w-3 h-3 md:w-4 md:h-4" />
           Raipur, Chhattisgarh
         </div>
+        <div className="text-[10px] text-zinc-600">
+          Website developed by Akhand Upadhyay
+        </div>
+        <div className="text-[10px] text-zinc-600">
+          +91 6392934409
+        </div>
       </footer>
 
       {/* Booking Modal */}
       {isBookingOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setIsBookingOpen(false)}></div>
-          <div className="relative bg-surface-container-low p-8 rounded-2xl max-w-md w-full shadow-2xl">
+          <div className="relative bg-surface-container-low p-6 md:p-8 rounded-2xl max-w-2xl w-full shadow-2xl overflow-y-auto max-h-[90vh]">
             <button 
               onClick={() => setIsBookingOpen(false)} 
               className="absolute top-4 right-4 text-zinc-400 hover:text-white"
@@ -488,39 +637,79 @@ function App() {
               <p className="text-primary font-semibold mb-6">{selectedPackage}</p>
             )}
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Customer Name</label>
-                <input 
-                  type="text" 
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  placeholder="Enter your name"
-                  className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">Customer Name</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    placeholder="Enter your name"
+                    className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">Customer Number</label>
+                  <input 
+                    type="tel" 
+                    required
+                    value={formData.number}
+                    onChange={(e) => setFormData({...formData, number: e.target.value})}
+                    placeholder="Enter your phone number"
+                    className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Customer Number</label>
-                <input 
-                  type="tel" 
-                  required
-                  value={formData.number}
-                  onChange={(e) => setFormData({...formData, number: e.target.value})}
-                  placeholder="Enter your phone number"
-                  className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">Car Model</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={formData.carModel}
+                    onClick={() => setFormData({...formData, carModel: ''})}
+                    onChange={(e) => setFormData({...formData, carModel: e.target.value})}
+                    placeholder="e.g., Honda City, Swift, Creta"
+                    className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">Select Plan</label>
+                  <select 
+                    required
+                    value={formData.plan}
+                    onChange={(e) => setFormData({...formData, plan: e.target.value})}
+                    className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="">Select a plan</option>
+                    <option value="BASIC WASH - ₹349">BASIC WASH - ₹349</option>
+                    <option value="SUPER WASH - ₹449">SUPER WASH - ₹449</option>
+                    <option value="PREMIUM DELUXE WASH - ₹649">PREMIUM DELUXE WASH - ₹649</option>
+                  </select>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Car Model</label>
-                <input 
-                  type="text" 
-                  required
-                  value={formData.carModel}
-                  onClick={() => setFormData({...formData, carModel: ''})}
-                  onChange={(e) => setFormData({...formData, carModel: e.target.value})}
-                  placeholder="e.g., Honda City, Swift, Creta"
-                  className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">Date</label>
+                  <input 
+                    type="date" 
+                    required
+                    value={formData.date}
+                    onChange={(e) => setFormData({...formData, date: e.target.value})}
+                    className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">Time</label>
+                  <input 
+                    type="time" 
+                    required
+                    value={formData.time}
+                    onChange={(e) => setFormData({...formData, time: e.target.value})}
+                    className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">Address</label>
