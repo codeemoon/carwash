@@ -222,9 +222,9 @@ function App() {
                 </div>
               </div>
             </div>
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-zinc-800">
+            <div className="relative aspect-[3/2] rounded-lg overflow-hidden bg-zinc-800 max-w-md mx-auto md:max-w-none">
               <video 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 src="/our_videos/vid 2.mp4" 
                 controls
                 playsInline
@@ -385,8 +385,6 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="mb-8 md:mb-12">
             <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">Price Plans</h2>
-            <p className="text-primary font-bold mt-4 md:hidden">SUV / MUV / XUV range starts from ₹750 onwards.</p>
-            <p className="text-on-surface-variant text-sm mt-1 md:hidden">Note: Customer needs to provide Water Supply and Power Supply.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 items-stretch">
             {/* Plan 1 */}
@@ -486,7 +484,7 @@ function App() {
               </button>
             </div>
           </div>
-          <div className="hidden md:block mt-8 md:mt-12 text-center p-4 md:p-6 bg-surface-container-lowest rounded-lg border border-outline-variant/10">
+          <div className="mt-8 md:mt-12 text-center p-4 md:p-6 bg-surface-container-lowest rounded-lg border border-outline-variant/10">
             <p className="text-primary font-bold">SUV / MUV / XUV range starts from ₹750 onwards.</p>
             <p className="text-on-surface-variant text-sm mt-2">Note: Customer needs to provide Water Supply and Power Supply.</p>
           </div>
