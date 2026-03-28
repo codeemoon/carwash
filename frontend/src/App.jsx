@@ -101,17 +101,29 @@ function App() {
 
   const handleBookClick = (packageName = '') => {
     setSelectedPackage(packageName)
+    if (packageName) {
+      setFormData(prev => ({ ...prev, plan: packageName }))
+    }
     setIsBookingOpen(true)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    
+    // Validate all fields
+    const planValue = selectedPackage || formData.plan
+    if (!formData.name || !formData.number || !formData.carModel || !planValue || !formData.date || !formData.time || !formData.address || !formData.landmark) {
+      alert('Please fill in all fields before submitting.')
+      return
+    }
+    
     const phoneNumber = '9685661519'
     const message = `Hello Shree Car Wash,\n\nI would like to book the ${selectedPackage || formData.plan || 'Service'}.\n\n*Name:* ${formData.name}\n*Phone:* ${formData.number}\n*Car Model:* ${formData.carModel}\n*Plan:* ${formData.plan}\n*Date:* ${formData.date}\n*Time:* ${formData.time}\n*Address:* ${formData.address}\n*Landmark:* ${formData.landmark}\n\nPlease confirm my booking.`
     
     const whatsappUrl = `https://wa.me/91${phoneNumber}?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
     setIsBookingOpen(false)
+    setSelectedPackage('')
     setFormData({ name: '', number: '', carModel: '', address: '', landmark: '', plan: '', date: '', time: '' })
   }
 
@@ -483,10 +495,50 @@ function App() {
                 Book Deluxe
               </button>
             </div>
+            {/* Plan 4 - SUV/MUV/XUV */}
+            <div className="bg-surface-container-low p-6 md:p-10 rounded-xl flex flex-col border-2 border-primary/30">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-on-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                For Big Vehicles
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">PREMIUM DELUXE WASH</h3>
+              <p className="text-primary text-sm mb-2">SUV / MUV / XUV WASH</p>
+              <div className="text-3xl md:text-4xl font-black text-primary mb-4 md:mb-6">₹750</div>
+              <ul className="space-y-3 md:space-y-4 mb-6 md:mb-10 flex-grow text-sm">
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Foam Washing
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Tyre Cleaning & Polishing
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Interior Deep Vacuum Cleaning
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Exterior Waxing
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Gentle Machine Rubbing
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Glass Cleaning
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Gentle Finish
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Extra Interior Cleaning
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> All Season Matts
+                </li>
+              </ul>
+              <button onClick={() => handleBookClick('SUV / MUV / XUV WASH - ₹750')} className="w-full py-3 md:py-4 rounded-full cta-gradient text-on-primary font-bold shadow-lg shadow-primary/20 hover:brightness-110 transition-all text-sm md:text-base">
+                Book SUV/MUV/XUV
+              </button>
+            </div>
           </div>
           <div className="mt-8 md:mt-12 text-center p-4 md:p-6 bg-surface-container-lowest rounded-lg border border-outline-variant/10">
-            <p className="text-primary font-bold">SUV / MUV / XUV range starts from ₹750 onwards.</p>
-            <p className="text-on-surface-variant text-sm mt-2">Note: Customer needs to provide Water Supply and Power Supply.</p>
+            <p className="text-on-surface-variant text-sm">Note: Customer needs to provide Water Supply and Power Supply for all services</p>
           </div>
         </div>
       </section>
@@ -585,6 +637,12 @@ function App() {
               <p className="text-on-surface-variant text-sm">Premium results without the premium markup. Transparent pricing for everyone.</p>
             </div>
           </div>
+          <div className="flex justify-center mt-8">
+            <button onClick={() => handleBookClick()} className="cta-gradient text-on-primary font-bold px-8 py-4 rounded-full text-lg shadow-2xl shadow-primary/20 hover:brightness-110 transition-all flex items-center gap-2">
+              <MessageCircle className="w-5 h-5" />
+              Book Now
+            </button>
+          </div>
         </div>
       </section>
 
@@ -601,7 +659,6 @@ function App() {
           <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#services">Services</a>
           <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#pricing">Pricing</a>
           <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#stories">Stories</a>
-          <button onClick={() => handleBookClick()} className="text-zinc-500 hover:text-yellow-400 transition-colors">WhatsApp Booking</button>
         </div>
         <div className="h-[1px] w-full max-w-md bg-white/10 my-2 md:my-4"></div>
         <div className="text-xs md:text-sm text-zinc-500">
@@ -610,12 +667,6 @@ function App() {
         <div className="flex items-center gap-2 text-xs md:text-sm text-zinc-500">
           <MapPin className="w-3 h-3 md:w-4 md:h-4" />
           Raipur, Chhattisgarh
-        </div>
-        <div className="text-[10px] text-zinc-600">
-          Website developed by Akhand Upadhyay
-        </div>
-        <div className="text-[10px] text-zinc-600">
-          +91 6392934409
         </div>
       </footer>
 
@@ -678,12 +729,14 @@ function App() {
                     required
                     value={formData.plan}
                     onChange={(e) => setFormData({...formData, plan: e.target.value})}
-                    className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                    disabled={!!selectedPackage}
+                    className={`w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface focus:outline-none focus:ring-2 focus:ring-primary ${selectedPackage ? 'opacity-70 cursor-not-allowed' : ''}`}
                   >
                     <option value="">Select a plan</option>
                     <option value="BASIC WASH - ₹349">BASIC WASH - ₹349</option>
                     <option value="SUPER WASH - ₹449">SUPER WASH - ₹449</option>
                     <option value="PREMIUM DELUXE WASH - ₹649">PREMIUM DELUXE WASH - ₹649</option>
+                  <option value="SUV / MUV / XUV WASH - ₹750">Suv/Xuv/Muv - ₹750</option>
                   </select>
                 </div>
               </div>
