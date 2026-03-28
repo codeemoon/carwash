@@ -1,479 +1,331 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
+import { 
+  Menu, MessageCircle, Phone, Home, Clock, CreditCard, 
+  Car, Users, Award, PlayCircle, CheckCircle, ArrowRight,
+  ChevronRight, Sparkles, MapPin
+} from 'lucide-react'
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [currentPoster, setCurrentPoster] = useState(0)
-  const [hasAnimated, setHasAnimated] = useState(false)
-  const [counts, setCounts] = useState({ customers: 0, cars: 0, years: 0 })
-  const statsRef = useRef(null)
-
-  // Auto-rotate poster carousel
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentPoster((prev) => (prev + 1) % 5)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
-
-  // Count-up animation for stats (only once using Intersection Observer)
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !hasAnimated) {
-          setHasAnimated(true)
-          // Animate counts over 3 seconds
-          const duration = 3000
-          const steps = 60
-          const interval = duration / steps
-          const targets = { customers: 800, cars: 10450, years: 3 }
-          let step = 0
-          const timer = setInterval(() => {
-            step++
-            const progress = step / steps
-            setCounts({
-              customers: Math.floor(targets.customers * progress),
-              cars: Math.floor(targets.cars * progress),
-              years: Math.floor(targets.years * progress)
-            })
-            if (step >= steps) {
-              clearInterval(timer)
-              setCounts(targets)
-            }
-          }, interval)
-        }
-      },
-      { threshold: 0.5 }
-    )
-    if (statsRef.current) {
-      observer.observe(statsRef.current)
-    }
-    return () => observer.disconnect()
-  }, [hasAnimated])
 
   return (
     <div className="min-h-screen bg-background text-on-surface font-body">
       {/* TopNavBar */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm dark:shadow-none">
-        <div className="max-w-7xl mx-auto flex justify-between items-center px-8 py-4">
-          <div className="flex items-center gap-2">
-            <img 
-              src="/logo/ChatGPT Image Mar 27, 2026, 05_31_27 PM.png" 
-              alt="Shree Car Wash Logo" 
-              className="h-12 w-auto"
-            />
+      <nav className="fixed top-0 w-full z-50 bg-zinc-900/60 backdrop-blur-xl shadow-2xl shadow-black/20">
+        <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
+          <div className="text-xl font-black tracking-tighter text-zinc-100 font-headline">
+            SHREE CAR WASH & DETAILING
           </div>
-          
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <span className="material-symbols-outlined text-3xl">menu</span>
+          <div className="hidden md:flex gap-8 items-center">
+            <a className="text-zinc-400 font-medium hover:text-zinc-100 transition-colors" href="#services">Services</a>
+            <a className="text-zinc-400 font-medium hover:text-zinc-100 transition-colors" href="#pricing">Pricing</a>
+            <a className="text-zinc-400 font-medium hover:text-zinc-100 transition-colors" href="#stories">Stories</a>
+            <button className="cta-gradient text-on-primary font-bold px-6 py-2.5 rounded-full scale-95 active:scale-90 transition-transform">
+              WhatsApp Booking
+            </button>
+          </div>
+          {/* Mobile Menu Icon */}
+          <button className="md:hidden text-primary" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <Menu className="w-6 h-6" />
           </button>
-          
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8 font-headline font-bold tracking-tight text-lg">
-            <a className="text-slate-600 dark:text-slate-400 hover:text-amber-600 transition-colors hover:scale-105 transition-transform duration-300" href="#services">Services</a>
-            <a className="text-slate-600 dark:text-slate-400 hover:text-amber-600 transition-colors hover:scale-105 transition-transform duration-300" href="#pricing">Pricing</a>
-            <a className="text-slate-600 dark:text-slate-400 hover:text-amber-600 transition-colors hover:scale-105 transition-transform duration-300" href="#stories">Stories</a>
-          </div>
-          
-          <a className="gold-gradient text-white px-6 py-2.5 rounded-md font-headline font-bold shadow-md hover:scale-105 transition-all active:scale-95 hidden md:inline-block" href="https://wa.me/91XXXXXXXXXX">
-            Book on WhatsApp
-          </a>
         </div>
-        
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white dark:bg-slate-900 px-8 py-4 shadow-lg">
-            <div className="flex flex-col gap-4 font-headline font-bold">
-              <a className="text-slate-600 dark:text-slate-400 hover:text-amber-600" href="#services" onClick={() => setIsMenuOpen(false)}>Services</a>
-              <a className="text-slate-600 dark:text-slate-400 hover:text-amber-600" href="#pricing" onClick={() => setIsMenuOpen(false)}>Pricing</a>
-              <a className="text-slate-600 dark:text-slate-400 hover:text-amber-600" href="#stories" onClick={() => setIsMenuOpen(false)}>Stories</a>
-              <a className="gold-gradient text-white px-6 py-2.5 rounded-md font-headline font-bold text-center" href="https://wa.me/91XXXXXXXXXX">
-                Book on WhatsApp
-              </a>
-            </div>
+          <div className="md:hidden bg-zinc-900 px-8 py-4 flex flex-col gap-4">
+            <a className="text-zinc-400 font-medium" href="#services" onClick={() => setIsMenuOpen(false)}>Services</a>
+            <a className="text-zinc-400 font-medium" href="#pricing" onClick={() => setIsMenuOpen(false)}>Pricing</a>
+            <a className="text-zinc-400 font-medium" href="#stories" onClick={() => setIsMenuOpen(false)}>Stories</a>
+            <button className="cta-gradient text-on-primary font-bold px-6 py-2.5 rounded-full">
+              WhatsApp Booking
+            </button>
           </div>
         )}
       </nav>
 
-      {/* Auto-rotating Poster Carousel */}
-      <div className="relative w-full h-[220px] sm:h-[250px] md:h-[300px] lg:h-[350px] overflow-hidden mt-0 md:mt-2">
-        {['p1.webp', 'p2.webp', 'p3.webp', 'p4.webp', 'p5.webp'].map((poster, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${currentPoster === index ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <img
-              src={`/poster/${poster}`}
-              alt={`Poster ${index + 1}`}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        ))}
-        {/* Carousel Indicators */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-          {[0, 1, 2, 3, 4].map((index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentPoster(index)}
-              className={`w-2 h-2 rounded-full transition-all ${currentPoster === index ? 'bg-white w-6' : 'bg-white/50'}`}
-            />
-          ))}
+      {/* Hero Section */}
+      <header className="relative h-screen flex items-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            className="w-full h-full object-cover opacity-40" 
+            alt="close-up of a high-end luxury sports car in a dark professional studio with cinematic rim lighting and reflections" 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMzzSO4ZARtFPeh-sMU7YuLghrCJ8SxOXORwfwNvvQu3EARBUr9pfJUjo5p8U4pzIjPRH_usuQrhMwZLc_uf1Dybkrr2KYaixuN3PczcKyoFixKe6MUXCPf49eTkK0bsZI378pNbKBTgA_p8SliTwvIoju8h80JQoKtIxtly0RqFInTtdReBJ8ycmfbk2LZj1ahTNgLzKtlZEtzlXwJOVYa_tI5a07nk3EBcil61cOCArJ0z7t54d9lOgbzPeNYTyMDXzL65KntQ" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
         </div>
-      </div>
-
-      <main className="">
-        {/* Hero Section */}
-        <section className="relative min-h-[400px] sm:min-h-[500px] md:min-h-[870px] flex items-start md:items-center pt-8 md:pt-0 overflow-hidden bg-surface-container-lowest">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 grid md:grid-cols-2 gap-8 md:gap-12 items-center relative z-10">
-            <div className="order-2 md:order-1">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-headline font-extrabold text-on-surface leading-tight tracking-tight text-left">
-                Ab aapki car hogi <span className="text-primary">chamakdar</span>, ghar baithe!
-              </h1>
-              <p className="text-sm sm:text-base md:text-lg text-secondary max-w-lg leading-relaxed text-left mt-2">
-                Trusted Doorstep Car Wash in Raipur. Experience showroom-level shine at your convenience without leaving your home.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-3">
-                <a className="gold-gradient text-white px-6 sm:px-8 py-3 sm:py-4 rounded-md font-headline font-extrabold text-sm sm:text-lg shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2" href="https://wa.me/91XXXXXXXXXX">
-                  <span className="material-symbols-outlined text-xl">chat</span>
-                  Book Now on WhatsApp
-                </a>
-                <a className="bg-white border-2 border-outline-variant text-on-surface px-6 sm:px-8 py-3 sm:py-4 rounded-md font-headline font-extrabold text-sm sm:text-lg hover:bg-surface-container transition-all flex items-center justify-center gap-2" href="tel:+91XXXXXXXXXX">
-                  <span className="material-symbols-outlined text-xl">call</span>
-                  Call Now
-                </a>
-              </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-8 w-full">
+          <div className="max-w-2xl">
+            <span className="uppercase tracking-[0.2em] text-primary font-bold mb-6 block text-sm font-label">Raipur's #1 Detailing Studio</span>
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-6 leading-[1.1]">
+              Ab aapki car hogi <span className="text-primary">chamakdar</span>, ghar baithe!
+            </h1>
+            <p className="text-xl md:text-2xl text-on-surface-variant font-light mb-10 max-w-lg">
+              Trusted Doorstep Car Wash in Raipur. We bring the showroom shine to your driveway.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button className="cta-gradient text-on-primary font-bold px-10 py-5 rounded-full text-lg shadow-2xl shadow-primary/10 transition-all hover:brightness-110 flex items-center justify-center gap-2">
+                <MessageCircle className="w-5 h-5" />
+                Book Now on WhatsApp
+              </button>
+              <button className="bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold px-10 py-5 rounded-full text-lg transition-all hover:bg-surface-variant flex items-center justify-center gap-2">
+                <Phone className="w-5 h-5" />
+                Call Now
+              </button>
             </div>
-            <div className="order-1 md:order-2 relative hidden md:block">
-              <div className="absolute -inset-4 bg-primary-container/20 rounded-xl blur-3xl -z-10 animate-pulse"></div>
+          </div>
+        </div>
+      </header>
+
+      {/* Trust Stats */}
+      <section className="py-20 bg-surface">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Stat Card 1 */}
+            <div className="bg-surface-container-high p-10 rounded-lg flex flex-col items-center text-center transition-transform hover:-translate-y-2">
+              <Users className="text-primary text-5xl mb-4" />
+              <h3 className="text-4xl font-black text-on-surface mb-2">800+</h3>
+              <p className="text-on-surface-variant font-medium">Happy Customers</p>
+            </div>
+            {/* Stat Card 2 */}
+            <div className="bg-surface-container-high p-10 rounded-lg flex flex-col items-center text-center transition-transform hover:-translate-y-2">
+              <Car className="text-primary text-5xl mb-4" />
+              <h3 className="text-4xl font-black text-on-surface mb-2">10450+</h3>
+              <p className="text-on-surface-variant font-medium">Cars Washed</p>
+            </div>
+            {/* Stat Card 3 */}
+            <div className="bg-surface-container-high p-10 rounded-lg flex flex-col items-center text-center transition-transform hover:-translate-y-2">
+              <Award className="text-primary text-5xl mb-4" />
+              <h3 className="text-4xl font-black text-on-surface mb-2">3 Years</h3>
+              <p className="text-on-surface-variant font-medium">Experience</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="py-24 bg-surface-container-low" id="services">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div className="max-w-xl">
+              <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Precision in Every Polish</h2>
+              <p className="text-on-surface-variant text-lg">Why car enthusiasts in Raipur trust SHREE for their prized possessions.</p>
+            </div>
+            <div className="h-1 w-24 bg-primary mb-2 hidden md:block"></div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Feature 1 */}
+            <div className="p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <Home className="text-primary text-4xl mb-6" />
+              <h4 className="text-xl font-bold mb-3">Doorstep Service</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Experience ultimate convenience as our mobile units reach your home or office.</p>
+            </div>
+            {/* Feature 2 */}
+            <div className="p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <Clock className="text-primary text-4xl mb-6" />
+              <h4 className="text-xl font-bold mb-3">On-Time Guarantee</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">We value your time. Our detailers arrive exactly when scheduled, every single time.</p>
+            </div>
+            {/* Feature 3 */}
+            <div className="p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <Sparkles className="text-primary text-4xl mb-6" />
+              <h4 className="text-xl font-bold mb-3">Professional Cleaning</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Using pH-neutral foams and premium waxes for a swirl-free, factory finish.</p>
+            </div>
+            {/* Feature 4 */}
+            <div className="p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <CreditCard className="text-primary text-4xl mb-6" />
+              <h4 className="text-xl font-bold mb-3">Affordable Pricing</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Premium results without the premium markup. Transparent pricing for everyone.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Plans */}
+      <section className="py-24 bg-surface" id="pricing">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Select Your Shine</h2>
+            <p className="text-on-surface-variant">Tailored detailing packages for every need.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+            {/* Plan 1 */}
+            <div className="bg-surface-container-low p-10 rounded-xl flex flex-col">
+              <h3 className="text-2xl font-bold mb-2">Basic Wash</h3>
+              <div className="text-4xl font-black text-primary mb-6">₹349</div>
+              <ul className="space-y-4 mb-10 flex-grow">
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Exterior Foam Wash
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Tyre Dressing
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Glass Cleaning
+                </li>
+              </ul>
+              <button className="w-full py-4 rounded-full border border-outline-variant text-on-surface font-bold hover:bg-surface-variant transition-colors">
+                Book Basic
+              </button>
+            </div>
+            {/* Plan 2 (Most Popular) */}
+            <div className="bg-surface-container-high p-10 rounded-xl flex flex-col relative transform scale-105 border border-primary/20 shadow-2xl shadow-primary/5">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-on-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                Most Popular
+              </div>
+              <h3 className="text-2xl font-bold mb-2">Super Wash</h3>
+              <div className="text-4xl font-black text-primary mb-6">₹449</div>
+              <ul className="space-y-4 mb-10 flex-grow">
+                <li className="flex items-center gap-3 text-on-surface">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Basic Wash +
+                </li>
+                <li className="flex items-center gap-3 text-on-surface">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Interior Vacuuming
+                </li>
+                <li className="flex items-center gap-3 text-on-surface">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Dashboard Polishing
+                </li>
+                <li className="flex items-center gap-3 text-on-surface">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Floor Mat Cleaning
+                </li>
+              </ul>
+              <button className="w-full py-4 rounded-full cta-gradient text-on-primary font-bold shadow-lg shadow-primary/20 hover:brightness-110 transition-all">
+                Book Super
+              </button>
+            </div>
+            {/* Plan 3 */}
+            <div className="bg-surface-container-low p-10 rounded-xl flex flex-col">
+              <h3 className="text-2xl font-bold mb-2">Premium Deluxe Wash</h3>
+              <div className="text-4xl font-black text-primary mb-6">₹649</div>
+              <ul className="space-y-4 mb-10 flex-grow">
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Super Wash +
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Liquid Wax Coating
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Underbody Wash
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> AC Vent Sanitization
+                </li>
+              </ul>
+              <button className="w-full py-4 rounded-full border border-outline-variant text-on-surface font-bold hover:bg-surface-variant transition-colors">
+                Book Deluxe
+              </button>
+            </div>
+          </div>
+          <div className="mt-12 text-center p-6 bg-surface-container-lowest rounded-lg border border-outline-variant/10">
+            <p className="text-primary font-bold">SUV / MUV / XUV range starts from ₹750 onwards.</p>
+            <p className="text-on-surface-variant text-sm mt-2">Note: Customer needs to provide Water Supply and Power Supply.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Detailing Process (Video Placeholders) */}
+      <section className="py-24 bg-surface-container-low">
+        <div className="max-w-7xl mx-auto px-8">
+          <h2 className="text-4xl font-extrabold mb-12 text-center">Our Detailing Process</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
               <img 
-                alt="Premium Detailing" 
-                className="rounded-xl shadow-2xl w-full object-cover aspect-[4/3] transform hover:rotate-1 transition-transform duration-500" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCU6OGvqqyWdEmbfrVSNtxzphwzxyTBip_VSy9koh5no9kJXw5eU_4fvGBf8DsT17kefMZfDpdYCteuV_CONWR1wwQS-IGxBmUkf9gXAu66ksI1lPqb77sY_-LcLEXYTRPsOXpSd6Cynft-HGJMc1LGxfkS2BJAwaJNGAwkmtCJbpvdZ4lj68DZ_Dscaia3xW8O0vV2gjNU3h-VjynvF4s2IiBHAd_Ewe92igVQWiOlVfKNLIIiA-iGCTVWzNRuBLWS06N4qwN8Xg"
+                className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" 
+                alt="detailer using high-pressure foam cannon on a black luxury sedan in a dark garage" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwPSH9XULYK53i9Hz5SZSWd-HHG8Hcs28zg6zUcLS2NAqCndgw91_cpG1qt19hd5GgVzCAXkgT9twH8YqJRITCkSWyTkwSlge-VWN45aaqOrUJp6GGO3s7DxfNrU7ps7KPq7sQ-pCfiV-5sNF6ndgmCt2za94g5AeVwbUThZaoAuNZSuGlEQ1Por5Smi4Tw4aTY9BPLkNt_y203E8t9rSSos1ANZgYd8h4rzgY4SzrIchEID8-CwMrltRcxWCH6NHmCREVfrs6yw" 
               />
-            </div>
-          </div>
-          {/* Asymmetric Background Element */}
-          <div className="absolute top-0 right-0 w-1/3 h-full bg-surface-container-low -skew-x-12 translate-x-1/2 -z-0"></div>
-        </section>
-
-        {/* Trust Stats Section */}
-        <section ref={statsRef} className="bg-surface py-12 sm:py-20 px-4 sm:px-8">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-surface-container-lowest p-8 rounded-lg ghost-border flex items-center gap-6 shadow-sm">
-              <div className="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
-                <span className="material-symbols-outlined text-4xl">groups</span>
-              </div>
-              <div>
-                <div className="text-3xl font-headline font-extrabold text-on-surface">{counts.customers}+</div>
-                <div className="text-secondary font-medium">Happy Customers</div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <PlayCircle className="text-white text-5xl opacity-80" />
               </div>
             </div>
-            <div className="bg-surface-container-lowest p-8 rounded-lg ghost-border flex items-center gap-6 shadow-sm">
-              <div className="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
-                <span className="material-symbols-outlined text-4xl">directions_car</span>
-              </div>
-              <div>
-                <div className="text-3xl font-headline font-extrabold text-on-surface">{counts.cars.toLocaleString()}+</div>
-                <div className="text-secondary font-medium">Cars Washed</div>
-              </div>
-            </div>
-            <div className="bg-surface-container-lowest p-8 rounded-lg ghost-border flex items-center gap-6 shadow-sm">
-              <div className="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
-                <span className="material-symbols-outlined text-4xl">verified</span>
-              </div>
-              <div>
-                <div className="text-3xl font-headline font-extrabold text-on-surface">{counts.years}+</div>
-                <div className="text-secondary font-medium">Years Experience</div>
+            <div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
+              <img 
+                className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" 
+                alt="close-up of a professional orbital polisher tool on a glossy car hood with bright light reflections" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnQ9DTnXN-r6jer08kLtkWr3gyusmwpyLM4rkh69wMkFJweJi48UTBZlw6l7IDnRHaQlRCZh2OTxH3_4i-KLsR1k5eKfIEczGDeW3JYnhIeil20Y8N_lgTzHp5htQTi_6_ncfehJc9uU4JwEOWoGPp5y7ew73zmbNr3dL0KwEMx8vIoopX1uTKki1hbTPjPhd8K0bDs5RjOq0bArdPb6MG_PQUrZsUK5mMb9-Mce9diU8-bUc4Ts1dHEex3LseEmrz55H-A5XsQQ" 
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <PlayCircle className="text-white text-5xl opacity-80" />
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Services Section */}
-        <section className="py-8 sm:py-12 md:py-16 px-4 sm:px-8 bg-surface-container-low" id="services">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-4 sm:mb-8">
-              <span className="text-xl sm:text-2xl md:text-3xl text-primary font-bold tracking-widest uppercase font-headline">Why Choose Us</span>
+            <div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
+              <img 
+                className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" 
+                alt="extreme close-up of car wheels being scrubbed with a professional brush and specialized cleaner" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKDiC13AR6jBkQfKK7pt4hjwAkxdbOXCz9saP-M4HqaMUHRAKAo-R-Zf8oQ89QwWZ99q2Nn9ovzN_ZUr9SJxuMccFFj-92hl2dOqQ8wOca_Um-sZ9BpCkOyrX3KiQGqN8biRAN0uXlq1tFSFiVfkKRBL--FkLlgiQkvH2GXWZbs5wHgef4XgItQoxaHFT-YdmJQsCp3LwZUt9OrS5JP8EH94eaPm9xjfY_riRVpbCabvoaFFN3my44O6JP2FwkqirDigtaViLl4w" 
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <PlayCircle className="text-white text-5xl opacity-80" />
+              </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-              <div className="bg-surface-container-lowest p-3 sm:p-6 md:p-8 rounded-lg group hover:bg-primary-container transition-all duration-500 cursor-pointer">
-                <span className="material-symbols-outlined text-2xl sm:text-4xl text-primary mb-2 sm:mb-4 group-hover:text-white transition-colors">home_pin</span>
-                <h3 className="text-xs sm:text-lg font-headline font-bold mb-1 sm:mb-2 group-hover:text-white">Doorstep Service</h3>
-                <p className="text-xs sm:text-sm text-secondary group-hover:text-white/80 transition-colors hidden md:block">We come to you, anywhere in Raipur.</p>
-              </div>
-              <div className="bg-surface-container-lowest p-3 sm:p-6 md:p-8 rounded-lg group hover:bg-primary-container transition-all duration-500 cursor-pointer">
-                <span className="material-symbols-outlined text-2xl sm:text-4xl text-primary mb-2 sm:mb-4 group-hover:text-white transition-colors">schedule</span>
-                <h3 className="text-xs sm:text-lg font-headline font-bold mb-1 sm:mb-2 group-hover:text-white">On-Time Guarantee</h3>
-                <p className="text-xs sm:text-sm text-secondary group-hover:text-white/80 transition-colors hidden md:block">Precision timing because we value your schedule.</p>
-              </div>
-              <div className="bg-surface-container-lowest p-3 sm:p-6 md:p-8 rounded-lg group hover:bg-primary-container transition-all duration-500 cursor-pointer">
-                <span className="material-symbols-outlined text-2xl sm:text-4xl text-primary mb-2 sm:mb-4 group-hover:text-white transition-colors">clean_hands</span>
-                <h3 className="text-xs sm:text-lg font-headline font-bold mb-1 sm:mb-2 group-hover:text-white">Professional Cleaning</h3>
-                <p className="text-xs sm:text-sm text-secondary group-hover:text-white/80 transition-colors hidden md:block">Trained experts using eco-friendly products.</p>
-              </div>
-              <div className="bg-surface-container-lowest p-3 sm:p-6 md:p-8 rounded-lg group hover:bg-primary-container transition-all duration-500 cursor-pointer">
-                <span className="material-symbols-outlined text-2xl sm:text-4xl text-primary mb-2 sm:mb-4 group-hover:text-white transition-colors">payments</span>
-                <h3 className="text-xs sm:text-lg font-headline font-bold mb-1 sm:mb-2 group-hover:text-white">Affordable Pricing</h3>
-                <p className="text-xs sm:text-sm text-secondary group-hover:text-white/80 transition-colors hidden md:block">Transparent, flat-rate prices.</p>
+            <div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
+              <img 
+                className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" 
+                alt="detailer vacuuming the premium leather interior of a high-end luxury car" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8-ntm4XDpdLpMsDH6FGamAVXu_XFsA82OFjntg44mti4PmLBaUVwdrNG0s3NbqYY84Tsj-vh2VmI1RUJnrTND2khWIXxLGFH3BXVtaibE7b_qOZ6Um2euH3V1jNRVFuZMZ3IRVylh2OENVkbWZIOqpdtxbIBJ1xtc9YUMiDAh0-NStKTCgAD_Tdxy4FqvV3rI7fP7D6tJSDId9bFsg9Ie6K6SKDdd_Y2Hg0X6-Kdw0kJHJIi2tpnkvfRyx3ZvSdwix73ZNySAZg" 
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <PlayCircle className="text-white text-5xl opacity-80" />
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Pricing Plans Section */}
-        <section className="py-12 sm:py-16 md:py-24 px-4 sm:px-8 bg-surface-container-lowest" id="pricing">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-4 sm:mb-8">
-              <span className="text-xl sm:text-2xl md:text-3xl text-primary font-bold tracking-widest uppercase font-headline">Our Packages</span>
+      {/* Customer Stories */}
+      <section className="py-24 bg-surface" id="stories">
+        <div className="max-w-7xl mx-auto px-8">
+          <h2 className="text-4xl font-extrabold mb-12">Customer Stories</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Testimonial Video 1 */}
+            <div className="relative aspect-[16/9] rounded-xl overflow-hidden shadow-2xl group cursor-pointer">
+              <img 
+                className="w-full h-full object-cover" 
+                alt="smiling car owner giving a thumbs up next to their gleaming clean luxury car in a residential driveway" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbNxSEQc-uGH3os0RlLDmJ3Rc20N_o3fVAY16wp8k4pg8uVoL4KSwdI6m8AiKyfOWQqc7l5GHCGbOSpEKEorWbv07ewy7Bc2WaEG6OI9nWHMm9Cx-QAjCTuEauq5Fv7-W2CgcBLRbxBPQ5iurQnZuaO-vjjYZuV4mypdFJFcmTRVrBH96L8jZBQTe8IIbSpFNO6XStAb5rPfvITEDaza-nlghJV85hKz5XWGwJa3OBaiLIGK7uCQemiTzMFn_p-QHH9R7c_Z0Y6g" 
+              />
+              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">
+                <div className="bg-primary/90 p-4 rounded-full transition-transform group-hover:scale-110">
+                  <PlayCircle className="text-on-primary text-4xl" />
+                </div>
+                <p className="mt-4 font-bold text-white text-lg">"The best doorstep service in Raipur!"</p>
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-              {/* Basic Wash */}
-              <div className="relative bg-surface p-6 sm:p-10 rounded-lg ghost-border flex flex-col hover:shadow-2xl transition-all duration-500">
-                <div className="mb-4 sm:mb-8">
-                  <h3 className="text-xl sm:text-2xl font-headline font-bold text-on-surface mb-2">BASIC WASH – ₹349</h3>
+            {/* Testimonial Video 2 */}
+            <div className="relative aspect-[16/9] rounded-xl overflow-hidden shadow-2xl group cursor-pointer">
+              <img 
+                className="w-full h-full object-cover" 
+                alt="clean luxury SUV parked outside a modern home with soft evening lighting" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBXCRLhvp3BJtfUhfGIRw5VqmT8oEuC40smx00-kM1PrsuwxhGHIkcyr2LGp9VbPe7SSDnwq0TkqkWLRRzuLtZ45Na150i27PRDu3UlXQYQxCsFKwvqC1cou7NUIu2h7a07HCrO0qbwkfUBGu7OmNX6s--0xu5iGFIQUVGFJkrA9jOWkXkMld0337lqEeLH7zfScJuqm5StXCGKRFbEfJa3wivHVk-0x3RChVCZSUqL89Wc5zjA9LfNkIofEg1HqHM74lPyH0PQA" 
+              />
+              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">
+                <div className="bg-primary/90 p-4 rounded-full transition-transform group-hover:scale-110">
+                  <PlayCircle className="text-on-primary text-4xl" />
                 </div>
-                <ul className="space-y-2 sm:space-y-4 mb-6 sm:mb-10 flex-grow text-sm sm:text-base">
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Foam Wash
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Tyre Cleaning
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Glass Cleaning
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Interior Wipe
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Gentle Finish
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Foot Mat Wash
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Interior Vacuum
-                  </li>
-                </ul>
-                <a className="gold-gradient text-white text-center py-3 sm:py-4 rounded-md font-headline font-bold hover:scale-105 transition-all" href="https://wa.me/91XXXXXXXXXX">Book Now</a>
-              </div>
-
-              {/* Super Wash */}
-              <div className="relative bg-surface-container-low p-6 sm:p-10 rounded-lg border-2 border-primary-container flex flex-col md:scale-105 shadow-xl">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 gold-gradient text-white px-4 sm:px-6 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Most Popular</div>
-                <div className="mb-4 sm:mb-8">
-                  <h3 className="text-xl sm:text-2xl font-headline font-bold text-on-surface mb-2">SUPER WASH – ₹449</h3>
-                </div>
-                <ul className="space-y-2 sm:space-y-4 mb-6 sm:mb-10 flex-grow text-sm sm:text-base">
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Foam Washing
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Tyre Cleaning
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Tyre Polishing
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Vacuum Cleaning
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Exterior Waxing
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Glass Cleaning
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Gentle Finish
-                  </li>
-                </ul>
-                <a className="gold-gradient text-white text-center py-3 sm:py-4 rounded-md font-headline font-bold hover:scale-105 transition-all" href="https://wa.me/91XXXXXXXXXX">Book Now</a>
-              </div>
-
-              {/* Premium Deluxe */}
-              <div className="relative bg-surface p-6 sm:p-10 rounded-lg ghost-border flex flex-col hover:shadow-2xl transition-all duration-500">
-                <div className="mb-4 sm:mb-8">
-                  <h3 className="text-xl sm:text-2xl font-headline font-bold text-on-surface mb-2">PREMIUM DELUXE – ₹649</h3>
-                </div>
-                <ul className="space-y-2 sm:space-y-4 mb-6 sm:mb-10 flex-grow text-sm sm:text-base">
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Foam Washing
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Tyre Cleaning & Polishing
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Interior Deep Vacuum
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Exterior Waxing
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Gentle Machine Rubbing
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Glass Cleaning
-                  </li>
-                  <li className="flex items-start gap-2 sm:gap-3 text-secondary">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-xl">check_circle</span>
-                    Gentle Finish
-                  </li>
-                </ul>
-                <a className="gold-gradient text-white text-center py-3 sm:py-4 rounded-md font-headline font-bold hover:scale-105 transition-all" href="https://wa.me/91XXXXXXXXXX">Book Now</a>
+                <p className="mt-4 font-bold text-white text-lg">"Saved me hours of waiting at a garage."</p>
               </div>
             </div>
           </div>
-        </section>
-
-        {/* Customer Stories Section */}
-        <section className="py-24 px-8 bg-surface-container-low" id="stories">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16 space-y-4">
-              <span className="text-primary font-bold tracking-widest text-sm uppercase">Customer Stories</span>
-              <h2 className="text-4xl md:text-5xl font-headline font-extrabold text-on-surface">Hear from Our Happy Clients</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div className="group relative aspect-video bg-surface-container-highest rounded-lg overflow-hidden shadow-lg border border-outline-variant/30 cursor-pointer">
-                <img 
-                  alt="Customer Testimonial 1" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcLWWqRlo9Gs7hdG8N1bAAxizyuqiJnA4YP7RA0s6n7EfTIXUmPJvrHigPcGRL3lDj9dnWbfWz4cDxT63hqD9NAMRIo16ry9IkO2APIL6zTsEKTim6X5w-7BJDIoNrxCMbWuh0Md46c3LxrFuqmMCuaYOXLcVqVr27n_1sHD-W52zz02No3vHkXzsJu0VnejhiVrWY8kO94UqMHyk9mVVTvb4i7YKw7D2mXMCQhZeW3eZMNIY4Lz_aNOz-98t2ZHTu9sdTqMQgHA"
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity group-hover:bg-black/30">
-                  <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/50 group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-white text-5xl fill-1">play_arrow</span>
-                  </div>
-                </div>
-                <div className="absolute bottom-6 left-6 text-white">
-                  <p className="font-headline font-bold text-lg">"The best doorstep service in Raipur!"</p>
-                  <p className="text-sm opacity-90">— Rahul S., SUV Owner</p>
-                </div>
-              </div>
-              <div className="group relative aspect-video bg-surface-container-highest rounded-lg overflow-hidden shadow-lg border border-outline-variant/30 cursor-pointer">
-                <img 
-                  alt="Customer Testimonial 2" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1vSelZpyyWkiplMFivHxyG25hXunyrwfSf5DqhV4PjahUwzLerMWI0itNw8hVlDgUivZZlkrrL8i2HIZfSePeTD6E3vfeRjqvf_VU_4A74Ue_fy2S5jAB5Lm76GLvvw9G89MVMG3Sc7riP1bnLYMRo9O5WTYVw_wsZg1HODggXpFM6bWQshkBYX_VF9LuBSpaSZ7RVuID7-pbJSCWvq6W9IY3L4cjKFZyAqFetkVYbWVkI3FWetMgACYYSwd2jvnEUWpa5M2voA"
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity group-hover:bg-black/30">
-                  <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/50 group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-white text-5xl fill-1">play_arrow</span>
-                  </div>
-                </div>
-                <div className="absolute bottom-6 left-6 text-white">
-                  <p className="font-headline font-bold text-lg">"Dashboard polish is exceptional."</p>
-                  <p className="text-sm opacity-90">— Priya K., Luxury Sedan</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* See Us in Action Section */}
-        <section className="py-24 px-8 bg-surface-container-lowest">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16 space-y-4">
-              <span className="text-primary font-bold tracking-widest text-sm uppercase">See Us in Action</span>
-              <h2 className="text-4xl md:text-5xl font-headline font-extrabold text-on-surface">Our Detailing Process</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="group relative aspect-[9/16] bg-surface rounded-lg overflow-hidden shadow-md border border-outline-variant/20 cursor-pointer">
-                <img 
-                  alt="Detailing Action 1" 
-                  className="w-full h-full object-cover" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdhpdA-6AWBcBtHI1icYFH6pjg9I2yVr6r0haYj7ELcEE2TUXimDQNHPiQAxnlJqKm3D3NXToROIpTTCYS_KvO6cNnFCxaSPpNopPPbsHbNnOB5fUlmbj32fDdF1vxcRqc_9iUPcs-apKrdHgYnb7zK5sWTHbNaQhIt-YJMH0174oWi-h0A4McA6EFPXFPUNHmxjrWeujaftkVlhJAGLEqA_JOJzdZvk7d69w3lYxyozbz9P6H_KR6pZ9u7nULx7_cdNyRpUaJWQ"
-                />
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-white text-4xl opacity-80 group-hover:scale-125 transition-transform">play_circle</span>
-                </div>
-              </div>
-              <div className="group relative aspect-[9/16] bg-surface rounded-lg overflow-hidden shadow-md border border-outline-variant/20 cursor-pointer">
-                <img 
-                  alt="Detailing Action 2" 
-                  className="w-full h-full object-cover" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfgb3PHjdeKBnacB_cEAcR3Ne47AMOIZ94QoGQRXS5fs4lPrJdqsX-m0MRxvHxPg5vaGWEOsW5xkTJMFd9bQyTYCKgeF6IfYwZ7ZWMMJf4CNxt3e0bgPWFTQoMjNCZpT0TuCjNN6EZur5B6JHNv4kSw7Q2kd3zABHIV9AqToqm9cWs04MOopVW5EimQjqL6m294I84pvaNcTPHhLSu_HI3PQLi8B2B2cJMWFMjizJw1v5rhSV1zf4iur4UlhJE_WDWwYuwLGGN8Q"
-                />
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-white text-4xl opacity-80 group-hover:scale-125 transition-transform">play_circle</span>
-                </div>
-              </div>
-              <div className="group relative aspect-[9/16] bg-surface rounded-lg overflow-hidden shadow-md border border-outline-variant/20 cursor-pointer">
-                <img 
-                  alt="Detailing Action 3" 
-                  className="w-full h-full object-cover" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_u2uzAweViSK6L1lLlbTSUYaeyautyqYsrjnaNB59qhTsts70wvLEzeAl8vtahiTprkIED_i9E5Qe0C1oHH-83kDDFTuEgwGbdwkMOa_1OIhsIyE-su8eIMhs5FXkKvEcXyzJNoPrM6s4ilJf2AQv4ZngtYxhsBXn4CL9I5vZ004dk58i_6pa6zQO585k-WK1j5TKF5WbDDHgHawfV9F5kjsDz6Yt3mWpgQneXwfPKNxG3tiv6QNPuzMNbHM6iZzcqcSswKjmZg"
-                />
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-white text-4xl opacity-80 group-hover:scale-125 transition-transform">play_circle</span>
-                </div>
-              </div>
-              <div className="group relative aspect-[9/16] bg-surface rounded-lg overflow-hidden shadow-md border border-outline-variant/20 cursor-pointer">
-                <img 
-                  alt="Detailing Action 4" 
-                  className="w-full h-full object-cover" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKlMN_brLmp0cdInRHmGB-eQ4eJsQHsHqbLgo5rcy0uwCdvEutGyPvlna1HPivGE0XXgoCCsKGTaCEKDSX9ZP2m7ib7oV9kZGQPJ1hcCl8WKnlRjqh5x9l-_B7WCS_ix4hgx1vNjuyg_t6Ul0IKzZeoDzL0g3dMZOhznAOiHUQSog6b4WP4gNci72MxLt3ZnCkdP0D2S3Ps8lSW1bEkl9kc3PuXtEHDwh4prOuIatfbkErmJdz8yH0PVHT8C68EgA3IHCv5P8JTw"
-                />
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-white text-4xl opacity-80 group-hover:scale-125 transition-transform">play_circle</span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-16 text-center">
-              <a className="gold-gradient text-white px-10 py-5 rounded-md font-headline font-extrabold text-xl shadow-2xl hover:scale-105 transition-all inline-flex items-center gap-3" href="https://wa.me/91XXXXXXXXXX">
-                <span className="material-symbols-outlined">rocket_launch</span>
-                Transform Your Car Today
-              </a>
-            </div>
-          </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-slate-50 dark:bg-slate-950 w-full py-12 px-8">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-center md:text-left">
-            <h2 className="font-manrope font-black text-slate-900 dark:text-white text-2xl mb-2">SHREE CAR WASH</h2>
-            <p className="text-slate-500 font-inter text-sm max-w-xs">
-              Premium doorstep detailing services in Raipur. We bring the sparkle back to your driveway.
-            </p>
-          </div>
-          <div className="flex flex-col items-center md:items-end gap-4">
-            <div className="flex gap-8">
-              <a className="text-slate-400 hover:text-slate-900 dark:hover:text-white hover:underline decoration-amber-500 underline-offset-4 transition-all" href="#">Privacy Policy</a>
-              <a className="text-slate-400 hover:text-slate-900 dark:hover:text-white hover:underline decoration-amber-500 underline-offset-4 transition-all" href="#">Terms of Service</a>
-              <a className="text-slate-400 hover:text-slate-900 dark:hover:text-white hover:underline decoration-amber-500 underline-offset-4 transition-all" href="#">Contact Us</a>
-            </div>
-            <div className="flex items-center gap-2 text-amber-600 font-semibold">
-              <span className="material-symbols-outlined">location_city</span>
-              Raipur, Chhattisgarh.
-            </div>
-          </div>
+      <footer className="w-full rounded-t-[3rem] mt-20 bg-zinc-950 flex flex-col items-center justify-center py-12 px-6 text-center max-w-7xl mx-auto gap-6">
+        <div className="text-lg font-bold text-zinc-100 font-headline tracking-tighter">
+          SHREE CAR WASH & DETAILING
         </div>
-        <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 text-center">
-          <p className="font-inter text-sm text-slate-500">© 2024 Shree Car Wash & Detailing. Raipur, Chhattisgarh. All Rights Reserved.</p>
+        <div className="flex flex-wrap justify-center gap-8">
+          <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#services">Services</a>
+          <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#pricing">Pricing</a>
+          <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#stories">Stories</a>
+          <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#">WhatsApp Booking</a>
+        </div>
+        <div className="h-[1px] w-full max-w-md bg-white/10 my-4"></div>
+        <div className="font-manrope text-sm text-zinc-500">
+          © 2024 SHREE CAR WASH & DETAILING. All rights reserved.
+        </div>
+        <div className="flex items-center gap-2 text-zinc-500">
+          <MapPin className="w-4 h-4" />
+          Raipur, Chhattisgarh
         </div>
       </footer>
     </div>

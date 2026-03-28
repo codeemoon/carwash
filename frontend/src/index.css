@@ -1,13 +1,8 @@
 @import "tailwindcss";
 
-/* Custom Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
-
-/* Material Symbols Outlined base style */
-.material-symbols-outlined,
-.material-symbols-rounded {
-  font-family: 'Material Symbols Rounded';
+/* Material Symbols fallback - using Lucide instead */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Rounded', sans-serif;
   font-display: block;
   font-style: normal;
   font-weight: normal;
@@ -24,17 +19,18 @@
 }
 
 /* Custom utility classes */
-.glass-nav {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.glass-panel {
+  background: rgba(53, 52, 54, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
-.gold-gradient {
-  background: linear-gradient(135deg, #735c00 0%, #d4af37 100%);
+.cta-gradient {
+  background: linear-gradient(135deg, #f2ca50 0%, #d4af37 100%);
 }
 
-.ghost-border {
-  border: 1px solid rgba(208, 197, 175, 0.15);
+.tonal-carving-no-border {
+  border: none !important;
 }
 
 /* Custom font families */
@@ -43,79 +39,77 @@
 }
 
 .font-body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
 }
 
 .font-label {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
 }
 
-/* Custom colors */
-.bg-background { background-color: #f8f9fa; }
-.bg-surface { background-color: #f8f9fa; }
-.bg-surface-container-lowest { background-color: #ffffff; }
-.bg-surface-container-low { background-color: #f3f4f5; }
-.bg-surface-container { background-color: #edeeef; }
-.bg-surface-container-high { background-color: #e7e8e9; }
-.bg-surface-container-highest { background-color: #e1e3e4; }
-.bg-surface-dim { background-color: #d9dadb; }
-.bg-surface-bright { background-color: #f8f9fa; }
-
-.text-on-surface { color: #191c1d; }
-.text-on-background { color: #191c1d; }
-.text-on-primary { color: #ffffff; }
-.text-on-secondary { color: #ffffff; }
-.text-on-tertiary { color: #ffffff; }
-.text-on-error { color: #ffffff; }
-.text-primary { color: #735c00; }
-.text-secondary { color: #5f5e5e; }
-.text-tertiary { color: #415ba4; }
-.text-error { color: #ba1a1a; }
-.text-outline { color: #7f7663; }
-.text-on-surface-variant { color: #4d4635; }
-.text-on-primary-container { color: #554300; }
-.text-on-secondary-container { color: #636262; }
-.text-on-tertiary-container { color: #254188; }
-.text-on-error-container { color: #93000a; }
-.text-on-primary-fixed { color: #241a00; }
-.text-on-primary-fixed-variant { color: #574500; }
-.text-on-secondary-fixed { color: #1c1b1b; }
-.text-on-secondary-fixed-variant { color: #474746; }
-.text-on-tertiary-fixed { color: #00174b; }
-.text-on-tertiary-fixed-variant { color: #27438a; }
-.text-inverse-primary { color: #e9c349; }
-.text-inverse-surface { color: #2e3132; }
-.text-inverse-on-surface { color: #f0f1f2; }
-
-.bg-primary { background-color: #735c00; }
-.bg-secondary { background-color: #5f5e5e; }
-.bg-tertiary { background-color: #415ba4; }
-.bg-error { background-color: #ba1a1a; }
-.bg-primary-container { background-color: #d4af37; }
-.bg-secondary-container { background-color: #e2dfde; }
-.bg-tertiary-container { background-color: #97b0ff; }
-.bg-error-container { background-color: #ffdad6; }
-.bg-surface-variant { background-color: #e1e3e4; }
-.bg-outline-variant { background-color: #d0c5af; }
-.bg-primary-fixed { background-color: #ffe088; }
-.bg-secondary-fixed { background-color: #e5e2e1; }
-.bg-tertiary-fixed { background-color: #dbe1ff; }
-.bg-primary-fixed-dim { background-color: #e9c349; }
-.bg-secondary-fixed-dim { background-color: #c8c6c5; }
-.bg-tertiary-fixed-dim { background-color: #b4c5ff; }
-.bg-inverse-primary { background-color: #e9c349; }
-.bg-inverse-surface { background-color: #2e3132; }
-
-.border-primary { border-color: #735c00; }
-.border-secondary { border-color: #5f5e5e; }
-.border-tertiary { border-color: #415ba4; }
-.border-error { border-color: #ba1a1a; }
-.border-outline { border-color: #7f7663; }
-.border-outline-variant { border-color: #d0c5af; }
-.border-surface-variant { border-color: #e1e3e4; }
+/* Base styles */
+body {
+  background-color: #131314;
+  color: #e5e2e3;
+  font-family: 'Manrope', sans-serif;
+  scroll-behavior: smooth;
+  margin: 0;
+}
 
 /* Selection colors */
 ::selection {
   background-color: #d4af37;
-  color: #554300;
+  color: #3c2f00;
 }
+
+/* Custom Colors */
+.bg-background { background-color: #131314; }
+.bg-surface { background-color: #131314; }
+.bg-surface-container-lowest { background-color: #0e0e0f; }
+.bg-surface-container-low { background-color: #1b1b1c; }
+.bg-surface-container { background-color: #1f1f20; }
+.bg-surface-container-high { background-color: #2a2a2b; }
+.bg-surface-container-highest { background-color: #353436; }
+.bg-surface-variant { background-color: #353436; }
+.bg-zinc-800 { background-color: #27272a; }
+.bg-zinc-900 { background-color: #18181b; }
+.bg-zinc-950 { background-color: #09090b; }
+
+.text-on-surface { color: #e5e2e3; }
+.text-on-surface-variant { color: #d0c5af; }
+.text-primary { color: #f2ca50; }
+.text-zinc-100 { color: #f4f4f5; }
+.text-zinc-400 { color: #a1a1aa; }
+.text-zinc-500 { color: #71717a; }
+.text-white { color: #ffffff; }
+.text-on-primary { color: #3c2f00; }
+
+.border-outline-variant { border-color: #4d4635; }
+.border-primary\/20 { border-color: rgba(242, 202, 80, 0.2); }
+.border-white\/10 { border-color: rgba(255, 255, 255, 0.1); }
+.border-white\/30 { border-color: rgba(255, 255, 255, 0.3); }
+
+.shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+.shadow-black\/20 { --tw-shadow-color: rgba(0, 0, 0, 0.2); --tw-shadow: var(--tw-shadow-colored); }
+.shadow-primary\/10 { --tw-shadow-color: rgba(242, 202, 80, 0.1); --tw-shadow: var(--tw-shadow-colored); }
+.shadow-primary\/5 { --tw-shadow-color: rgba(242, 202, 80, 0.05); --tw-shadow: var(--tw-shadow-colored); }
+.shadow-primary\/20 { --tw-shadow-color: rgba(242, 202, 80, 0.2); --tw-shadow: var(--tw-shadow-colored); }
+
+.rounded-t-\[3rem\] { border-top-left-radius: 3rem; border-top-right-radius: 3rem; }
+
+/* Hover states */
+.hover\:translate-y-2:hover { transform: translateY(-0.5rem); }
+.hover\:scale-110:hover { transform: scale(1.1); }
+.hover\:bg-surface-variant:hover { background-color: #353436; }
+.hover\:bg-surface-container-highest:hover { background-color: #353436; }
+.hover\:text-yellow-400:hover { color: #facc15; }
+.hover\:text-zinc-100:hover { color: #f4f4f5; }
+.hover\:brightness-110:hover { filter: brightness(1.1); }
+
+/* Gradients */
+.from-background { --tw-gradient-from: #131314; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(19, 19, 20, 0)); }
+.to-transparent { --tw-gradient-to: transparent; }
+.via-transparent { --tw-gradient-stops: var(--tw-gradient-from), transparent, var(--tw-gradient-to); }
+
+/* Primary/20 for backgrounds */
+.bg-primary\/90 { background-color: rgba(242, 202, 80, 0.9); }
+.bg-black\/40 { background-color: rgba(0, 0, 0, 0.4); }
