@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { 
   Menu, MessageCircle, Phone, Home, Clock, CreditCard, 
   Car, Users, Award, PlayCircle, CheckCircle, ArrowRight,
@@ -16,6 +16,44 @@ function App() {
     address: '',
     landmark: ''
   })
+
+  // Count-up animation for stats
+  const [hasAnimated, setHasAnimated] = useState(false)
+  const [counts, setCounts] = useState({ customers: 0, cars: 0, years: 0 })
+  const statsRef = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !hasAnimated) {
+          setHasAnimated(true)
+          const duration = 3000
+          const steps = 60
+          const interval = duration / steps
+          const targets = { customers: 800, cars: 10450, years: 3 }
+          let step = 0
+          const timer = setInterval(() => {
+            step++
+            const progress = step / steps
+            setCounts({
+              customers: Math.floor(targets.customers * progress),
+              cars: Math.floor(targets.cars * progress),
+              years: Math.floor(targets.years * progress)
+            })
+            if (step >= steps) {
+              clearInterval(timer)
+              setCounts(targets)
+            }
+          }, interval)
+        }
+      },
+      { threshold: 0.5 }
+    )
+    if (statsRef.current) {
+      observer.observe(statsRef.current)
+    }
+    return () => observer.disconnect()
+  }, [hasAnimated])
 
   const handleBookClick = (packageName = '') => {
     setSelectedPackage(packageName)
@@ -37,9 +75,13 @@ function App() {
     <div className="min-h-screen bg-background text-on-surface font-body">
       {/* TopNavBar */}
       <nav className="fixed top-0 w-full z-50 bg-zinc-900/60 backdrop-blur-xl shadow-2xl shadow-black/20">
-        <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
-          <div className="text-xl font-black tracking-tighter text-zinc-100 font-headline">
-            SHREE CAR WASH & DETAILING
+        <div className="flex justify-between items-center px-4 md:px-8 py-3 md:py-4 max-w-7xl mx-auto">
+          <div className="flex items-center gap-2">
+            <img 
+              src="/logo/logo.png" 
+              alt="Shree Car Wash Logo" 
+              className="h-10 md:h-12 w-auto"
+            />
           </div>
           <div className="hidden md:flex gap-8 items-center">
             <a className="text-zinc-400 font-medium hover:text-zinc-100 transition-colors" href="#services">Services</a>
@@ -68,7 +110,7 @@ function App() {
       </nav>
 
       {/* Hero Section */}
-      <header className="relative h-screen flex items-center overflow-hidden">
+      <header className="relative min-h-[60vh] md:h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
             className="w-full h-full object-cover opacity-40" 
@@ -77,22 +119,22 @@ function App() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-8 w-full">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 w-full pt-24 md:pt-0">
           <div className="max-w-2xl">
-            <span className="uppercase tracking-[0.2em] text-primary font-bold mb-6 block text-sm font-label">Raipur's #1 Detailing Studio</span>
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-6 leading-[1.1]">
+            <span className="uppercase tracking-[0.2em] text-primary font-bold mb-2 md:mb-4 block text-xs font-label">Raipur's #1 Detailing Studio</span>
+            <h1 className="text-2xl md:text-5xl lg:text-7xl font-extrabold tracking-tighter mb-3 md:mb-6 leading-[1.1]">
               Ab aapki car hogi <span className="text-primary">chamakdar</span>, ghar baithe!
             </h1>
-            <p className="text-xl md:text-2xl text-on-surface-variant font-light mb-10 max-w-lg">
+            <p className="text-sm md:text-xl lg:text-2xl text-on-surface-variant font-light mb-4 md:mb-8 max-w-lg">
               Trusted Doorstep Car Wash in Raipur. We bring the showroom shine to your driveway.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button onClick={() => handleBookClick()} className="cta-gradient text-on-primary font-bold px-10 py-5 rounded-full text-lg shadow-2xl shadow-primary/10 transition-all hover:brightness-110 flex items-center justify-center gap-2">
-                <MessageCircle className="w-5 h-5" />
+            <div className="flex flex-col sm:flex-row gap-2 md:gap-4">
+              <button onClick={() => handleBookClick()} className="cta-gradient text-on-primary font-bold px-4 md:px-10 py-2 md:py-5 rounded-full text-xs md:text-lg shadow-2xl shadow-primary/10 transition-all hover:brightness-110 flex items-center justify-center gap-2">
+                <MessageCircle className="w-3 h-3 md:w-5 md:h-5" />
                 Book Now on WhatsApp
               </button>
-              <button className="bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold px-10 py-5 rounded-full text-lg transition-all hover:bg-surface-variant flex items-center justify-center gap-2">
-                <Phone className="w-5 h-5" />
+              <button className="bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold px-4 md:px-10 py-2 md:py-5 rounded-full text-xs md:text-lg transition-all hover:bg-surface-variant flex items-center justify-center gap-2">
+                <Phone className="w-3 h-3 md:w-5 md:h-5" />
                 Call Now
               </button>
             </div>
@@ -101,255 +143,331 @@ function App() {
       </header>
 
       {/* Trust Stats */}
-      <section className="py-20 bg-surface">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section ref={statsRef} className="py-8 md:py-12 bg-surface">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8 max-w-lg mx-auto">
             {/* Stat Card 1 */}
-            <div className="bg-surface-container-high p-10 rounded-lg flex flex-col items-center text-center transition-transform hover:-translate-y-2">
-              <Users className="text-primary text-5xl mb-4" />
-              <h3 className="text-4xl font-black text-on-surface mb-2">800+</h3>
-              <p className="text-on-surface-variant font-medium">Happy Customers</p>
+            <div className="bg-surface-container-high p-4 md:p-8 rounded-lg flex flex-col items-center text-center">
+              <Users className="text-primary text-2xl md:text-4xl mb-2 md:mb-4" />
+              <h3 className="text-2xl md:text-4xl font-black text-on-surface">{counts.customers}+</h3>
+              <p className="text-on-surface-variant font-medium text-xs md:text-sm">Happy Customers</p>
             </div>
             {/* Stat Card 2 */}
-            <div className="bg-surface-container-high p-10 rounded-lg flex flex-col items-center text-center transition-transform hover:-translate-y-2">
-              <Car className="text-primary text-5xl mb-4" />
-              <h3 className="text-4xl font-black text-on-surface mb-2">10450+</h3>
-              <p className="text-on-surface-variant font-medium">Cars Washed</p>
+            <div className="bg-surface-container-high p-4 md:p-8 rounded-lg flex flex-col items-center text-center">
+              <Car className="text-primary text-2xl md:text-4xl mb-2 md:mb-4" />
+              <h3 className="text-2xl md:text-4xl font-black text-on-surface">{counts.cars.toLocaleString()}+</h3>
+              <p className="text-on-surface-variant font-medium text-xs md:text-sm">Cars Washed</p>
             </div>
-            {/* Stat Card 3 */}
-            <div className="bg-surface-container-high p-10 rounded-lg flex flex-col items-center text-center transition-transform hover:-translate-y-2">
-              <Award className="text-primary text-5xl mb-4" />
-              <h3 className="text-4xl font-black text-on-surface mb-2">3 Years</h3>
-              <p className="text-on-surface-variant font-medium">Experience</p>
+          </div>
+          <div className="mt-4 md:mt-8 max-w-lg mx-auto">
+            {/* Stat Card 3 - Centered below */}
+            <div className="bg-surface-container-high p-4 md:p-8 rounded-lg flex flex-col items-center text-center">
+              <Award className="text-primary text-2xl md:text-4xl mb-2 md:mb-4" />
+              <h3 className="text-2xl md:text-4xl font-black text-on-surface">{counts.years}+</h3>
+              <p className="text-on-surface-variant font-medium text-xs md:text-sm">Years Experience</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section className="py-24 bg-surface-container-low" id="services">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div className="max-w-xl">
-              <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Precision in Every Polish</h2>
-              <p className="text-on-surface-variant text-lg">Why car enthusiasts in Raipur trust SHREE for their prized possessions.</p>
-            </div>
-            <div className="h-1 w-24 bg-primary mb-2 hidden md:block"></div>
+      {/* Our Services */}
+      <section className="py-8 md:py-16 bg-surface-container-low" id="services">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="mb-8 md:mb-12">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">Our Services</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Feature 1 */}
-            <div className="p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <Home className="text-primary text-4xl mb-6" />
-              <h4 className="text-xl font-bold mb-3">Doorstep Service</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Experience ultimate convenience as our mobile units reach your home or office.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {/* Service 1 */}
+            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <Sparkles className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Foam Washing</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Thick snow foam treatment jo bina scratches ke mitti aur dust ko nikal deta hai.</p>
             </div>
-            {/* Feature 2 */}
-            <div className="p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <Clock className="text-primary text-4xl mb-6" />
-              <h4 className="text-xl font-bold mb-3">On-Time Guarantee</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">We value your time. Our detailers arrive exactly when scheduled, every single time.</p>
+            {/* Service 2 */}
+            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <Car className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Tyre Cleaning & Polishing</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Mud ki deep cleaning aur tyres ko ek naye jaisi glossy black finish dena.</p>
             </div>
-            {/* Feature 3 */}
-            <div className="p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <Sparkles className="text-primary text-4xl mb-6" />
-              <h4 className="text-xl font-bold mb-3">Professional Cleaning</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Using pH-neutral foams and premium waxes for a swirl-free, factory finish.</p>
+            {/* Service 3 */}
+            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <Home className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Interior Deep Vacuum Cleaning</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Seats, carpets aur har chote kone se dhool aur kachre ki complete safai.</p>
             </div>
-            {/* Feature 4 */}
-            <div className="p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
-              <CreditCard className="text-primary text-4xl mb-6" />
-              <h4 className="text-xl font-bold mb-3">Affordable Pricing</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">Premium results without the premium markup. Transparent pricing for everyone.</p>
+            {/* Service 4 */}
+            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <Award className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Exterior Waxing</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Gadi ki body par ek protective layer jo paint ko chamkaati hai aur dhoop se bachati hai.</p>
+            </div>
+            {/* Service 5 */}
+            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <Clock className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Gentle Machine Rubbing</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Professional machine se halke scratches hatana aur paint ki original shine wapas lana.</p>
+            </div>
+            {/* Service 6 */}
+            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <CreditCard className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Glass Cleaning</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Windows aur windshield ki streak-free safai taaki driving ke waqt crystal clear vision mile.</p>
+            </div>
+            {/* Service 7 */}
+            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <Sparkles className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Gentle Finish</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Microfiber se final touch-up taaki gadi par ek bhi paani ka daag na rahe.</p>
+            </div>
+            {/* Service 8 */}
+            <div className="p-4 md:p-8 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors">
+              <Users className="text-primary text-3xl md:text-4xl mb-4 md:mb-6" />
+              <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3">Doorstep Service</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Hum aapke ghar ya office pe aapke convenient time pe pahuchte hain.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Plans */}
-      <section className="py-24 bg-surface" id="pricing">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Select Your Shine</h2>
-            <p className="text-on-surface-variant">Tailored detailing packages for every need.</p>
+      <section className="py-12 md:py-24 bg-surface" id="pricing">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="mb-8 md:mb-12">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">Price Plans</h2>
+            <p className="text-primary font-bold mt-4 md:hidden">SUV / MUV / XUV range starts from ₹750 onwards.</p>
+            <p className="text-on-surface-variant text-sm mt-1 md:hidden">Note: Customer needs to provide Water Supply and Power Supply.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 items-stretch">
             {/* Plan 1 */}
             <div className="bg-surface-container-low p-10 rounded-xl flex flex-col">
-              <h3 className="text-2xl font-bold mb-2">Basic Wash</h3>
+              <h3 className="text-2xl font-bold mb-2">BASIC WASH</h3>
               <div className="text-4xl font-black text-primary mb-6">₹349</div>
               <ul className="space-y-4 mb-10 flex-grow">
                 <li className="flex items-center gap-3 text-on-surface-variant">
-                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Exterior Foam Wash
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Foam Wash
                 </li>
                 <li className="flex items-center gap-3 text-on-surface-variant">
-                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Tyre Dressing
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Tyre Cleaning
                 </li>
                 <li className="flex items-center gap-3 text-on-surface-variant">
                   <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Glass Cleaning
                 </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Interior Wipe
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Gentle Finish
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Foot Mat Wash
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Interior Vacuum
+                </li>
               </ul>
-              <button onClick={() => handleBookClick('Basic Wash - ₹349')} className="w-full py-4 rounded-full border border-outline-variant text-on-surface font-bold hover:bg-surface-variant transition-colors">
+              <button onClick={() => handleBookClick('BASIC WASH - ₹349')} className="w-full py-3 md:py-4 rounded-full border border-outline-variant text-on-surface font-bold hover:bg-surface-variant transition-colors text-sm md:text-base">
                 Book Basic
               </button>
             </div>
             {/* Plan 2 (Most Popular) */}
-            <div className="bg-surface-container-high p-10 rounded-xl flex flex-col relative transform scale-105 border border-primary/20 shadow-2xl shadow-primary/5">
+            <div className="bg-surface-container-high p-6 md:p-10 rounded-xl flex flex-col relative transform scale-100 md:scale-105 border border-primary/20 shadow-2xl shadow-primary/5">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-on-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
                 Most Popular
               </div>
-              <h3 className="text-2xl font-bold mb-2">Super Wash</h3>
-              <div className="text-4xl font-black text-primary mb-6">₹449</div>
-              <ul className="space-y-4 mb-10 flex-grow">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">SUPER WASH</h3>
+              <div className="text-3xl md:text-4xl font-black text-primary mb-4 md:mb-6">₹449</div>
+              <ul className="space-y-3 md:space-y-4 mb-6 md:mb-10 flex-grow text-sm">
                 <li className="flex items-center gap-3 text-on-surface">
-                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Basic Wash +
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Foam Washing
                 </li>
                 <li className="flex items-center gap-3 text-on-surface">
-                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Interior Vacuuming
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Tyre Cleaning
                 </li>
                 <li className="flex items-center gap-3 text-on-surface">
-                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Dashboard Polishing
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Tyre Polishing
                 </li>
                 <li className="flex items-center gap-3 text-on-surface">
-                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Floor Mat Cleaning
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Vacuum Cleaning
+                </li>
+                <li className="flex items-center gap-3 text-on-surface">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Exterior Waxing
+                </li>
+                <li className="flex items-center gap-3 text-on-surface">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Glass Cleaning
+                </li>
+                <li className="flex items-center gap-3 text-on-surface">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Gentle Finish
                 </li>
               </ul>
-              <button onClick={() => handleBookClick('Super Wash - ₹449')} className="w-full py-4 rounded-full cta-gradient text-on-primary font-bold shadow-lg shadow-primary/20 hover:brightness-110 transition-all">
+              <button onClick={() => handleBookClick('SUPER WASH - ₹449')} className="w-full py-3 md:py-4 rounded-full cta-gradient text-on-primary font-bold shadow-lg shadow-primary/20 hover:brightness-110 transition-all text-sm md:text-base">
                 Book Super
               </button>
             </div>
             {/* Plan 3 */}
-            <div className="bg-surface-container-low p-10 rounded-xl flex flex-col">
-              <h3 className="text-2xl font-bold mb-2">Premium Deluxe Wash</h3>
-              <div className="text-4xl font-black text-primary mb-6">₹649</div>
-              <ul className="space-y-4 mb-10 flex-grow">
+            <div className="bg-surface-container-low p-6 md:p-10 rounded-xl flex flex-col">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">PREMIUM DELUXE WASH</h3>
+              <div className="text-3xl md:text-4xl font-black text-primary mb-4 md:mb-6">₹649</div>
+              <ul className="space-y-3 md:space-y-4 mb-6 md:mb-10 flex-grow text-sm">
                 <li className="flex items-center gap-3 text-on-surface-variant">
-                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Super Wash +
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Foam Washing
                 </li>
                 <li className="flex items-center gap-3 text-on-surface-variant">
-                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Liquid Wax Coating
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Tyre Cleaning & Polishing
                 </li>
                 <li className="flex items-center gap-3 text-on-surface-variant">
-                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Underbody Wash
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Interior Deep Vacuum Cleaning
                 </li>
                 <li className="flex items-center gap-3 text-on-surface-variant">
-                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> AC Vent Sanitization
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Exterior Waxing
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Gentle Machine Rubbing
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Glass Cleaning
+                </li>
+                <li className="flex items-center gap-3 text-on-surface-variant">
+                  <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Gentle Finish
                 </li>
               </ul>
-              <button onClick={() => handleBookClick('Premium Deluxe Wash - ₹649')} className="w-full py-4 rounded-full border border-outline-variant text-on-surface font-bold hover:bg-surface-variant transition-colors">
+              <button onClick={() => handleBookClick('PREMIUM DELUXE WASH - ₹649')} className="w-full py-3 md:py-4 rounded-full border border-outline-variant text-on-surface font-bold hover:bg-surface-variant transition-colors text-sm md:text-base">
                 Book Deluxe
               </button>
             </div>
           </div>
-          <div className="mt-12 text-center p-6 bg-surface-container-lowest rounded-lg border border-outline-variant/10">
+          <div className="hidden md:block mt-8 md:mt-12 text-center p-4 md:p-6 bg-surface-container-lowest rounded-lg border border-outline-variant/10">
             <p className="text-primary font-bold">SUV / MUV / XUV range starts from ₹750 onwards.</p>
             <p className="text-on-surface-variant text-sm mt-2">Note: Customer needs to provide Water Supply and Power Supply.</p>
           </div>
         </div>
       </section>
 
-      {/* Detailing Process (Video Placeholders) */}
-      <section className="py-24 bg-surface-container-low">
-        <div className="max-w-7xl mx-auto px-8">
-          <h2 className="text-4xl font-extrabold mb-12 text-center">Our Detailing Process</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
-              <img 
-                className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" 
-                alt="detailer using high-pressure foam cannon on a black luxury sedan in a dark garage" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwPSH9XULYK53i9Hz5SZSWd-HHG8Hcs28zg6zUcLS2NAqCndgw91_cpG1qt19hd5GgVzCAXkgT9twH8YqJRITCkSWyTkwSlge-VWN45aaqOrUJp6GGO3s7DxfNrU7ps7KPq7sQ-pCfiV-5sNF6ndgmCt2za94g5AeVwbUThZaoAuNZSuGlEQ1Por5Smi4Tw4aTY9BPLkNt_y203E8t9rSSos1ANZgYd8h4rzgY4SzrIchEID8-CwMrltRcxWCH6NHmCREVfrs6yw" 
+      {/* Our Detailing Process */}
+      <section className="py-12 md:py-24 bg-surface-container-low">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-8 md:mb-12">Our Detailing Process</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="relative aspect-[9/16] rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
+              <video 
+                className="w-full h-full object-cover"
+                src="/our_videos/vid 1.mp4" 
+                controls
+                playsInline
               />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <PlayCircle className="text-white text-5xl opacity-80" />
-              </div>
             </div>
-            <div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
-              <img 
-                className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" 
-                alt="close-up of a professional orbital polisher tool on a glossy car hood with bright light reflections" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnQ9DTnXN-r6jer08kLtkWr3gyusmwpyLM4rkh69wMkFJweJi48UTBZlw6l7IDnRHaQlRCZh2OTxH3_4i-KLsR1k5eKfIEczGDeW3JYnhIeil20Y8N_lgTzHp5htQTi_6_ncfehJc9uU4JwEOWoGPp5y7ew73zmbNr3dL0KwEMx8vIoopX1uTKki1hbTPjPhd8K0bDs5RjOq0bArdPb6MG_PQUrZsUK5mMb9-Mce9diU8-bUc4Ts1dHEex3LseEmrz55H-A5XsQQ" 
+            <div className="relative aspect-[9/16] rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
+              <video 
+                className="w-full h-full object-cover"
+                src="/our_videos/vid 2.mp4" 
+                controls
+                playsInline
               />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <PlayCircle className="text-white text-5xl opacity-80" />
-              </div>
             </div>
-            <div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
-              <img 
-                className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" 
-                alt="extreme close-up of car wheels being scrubbed with a professional brush and specialized cleaner" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKDiC13AR6jBkQfKK7pt4hjwAkxdbOXCz9saP-M4HqaMUHRAKAo-R-Zf8oQ89QwWZ99q2Nn9ovzN_ZUr9SJxuMccFFj-92hl2dOqQ8wOca_Um-sZ9BpCkOyrX3KiQGqN8biRAN0uXlq1tFSFiVfkKRBL--FkLlgiQkvH2GXWZbs5wHgef4XgItQoxaHFT-YdmJQsCp3LwZUt9OrS5JP8EH94eaPm9xjfY_riRVpbCabvoaFFN3my44O6JP2FwkqirDigtaViLl4w" 
+            <div className="relative aspect-[9/16] rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
+              <video 
+                className="w-full h-full object-cover"
+                src="/our_videos/vid 3.mp4" 
+                controls
+                playsInline
               />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <PlayCircle className="text-white text-5xl opacity-80" />
-              </div>
-            </div>
-            <div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
-              <img 
-                className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" 
-                alt="detailer vacuuming the premium leather interior of a high-end luxury car" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8-ntm4XDpdLpMsDH6FGamAVXu_XFsA82OFjntg44mti4PmLBaUVwdrNG0s3NbqYY84Tsj-vh2VmI1RUJnrTND2khWIXxLGFH3BXVtaibE7b_qOZ6Um2euH3V1jNRVFuZMZ3IRVylh2OENVkbWZIOqpdtxbIBJ1xtc9YUMiDAh0-NStKTCgAD_Tdxy4FqvV3rI7fP7D6tJSDId9bFsg9Ie6K6SKDdd_Y2Hg0X6-Kdw0kJHJIi2tpnkvfRyx3ZvSdwix73ZNySAZg" 
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <PlayCircle className="text-white text-5xl opacity-80" />
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Customer Stories */}
-      <section className="py-24 bg-surface" id="stories">
-        <div className="max-w-7xl mx-auto px-8">
-          <h2 className="text-4xl font-extrabold mb-12">Customer Stories</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Testimonial Video 1 */}
-            <div className="relative aspect-[16/9] rounded-xl overflow-hidden shadow-2xl group cursor-pointer">
-              <img 
-                className="w-full h-full object-cover" 
-                alt="smiling car owner giving a thumbs up next to their gleaming clean luxury car in a residential driveway" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbNxSEQc-uGH3os0RlLDmJ3Rc20N_o3fVAY16wp8k4pg8uVoL4KSwdI6m8AiKyfOWQqc7l5GHCGbOSpEKEorWbv07ewy7Bc2WaEG6OI9nWHMm9Cx-QAjCTuEauq5Fv7-W2CgcBLRbxBPQ5iurQnZuaO-vjjYZuV4mypdFJFcmTRVrBH96L8jZBQTe8IIbSpFNO6XStAb5rPfvITEDaza-nlghJV85hKz5XWGwJa3OBaiLIGK7uCQemiTzMFn_p-QHH9R7c_Z0Y6g" 
+      {/* Customer Reviews */}
+      <section className="py-12 md:py-24 bg-surface" id="reviews">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-8 md:mb-12">Customer Reviews</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="relative aspect-[9/16] rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
+              <video 
+                className="w-full h-full object-cover"
+                src="/customer video/review 1.mp4" 
+                controls
+                playsInline
               />
-              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">
-                <div className="bg-primary/90 p-4 rounded-full transition-transform group-hover:scale-110">
-                  <PlayCircle className="text-on-primary text-4xl" />
-                </div>
-                <p className="mt-4 font-bold text-white text-lg">"The best doorstep service in Raipur!"</p>
-              </div>
             </div>
-            {/* Testimonial Video 2 */}
-            <div className="relative aspect-[16/9] rounded-xl overflow-hidden shadow-2xl group cursor-pointer">
-              <img 
-                className="w-full h-full object-cover" 
-                alt="clean luxury SUV parked outside a modern home with soft evening lighting" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBXCRLhvp3BJtfUhfGIRw5VqmT8oEuC40smx00-kM1PrsuwxhGHIkcyr2LGp9VbPe7SSDnwq0TkqkWLRRzuLtZ45Na150i27PRDu3UlXQYQxCsFKwvqC1cou7NUIu2h7a07HCrO0qbwkfUBGu7OmNX6s--0xu5iGFIQUVGFJkrA9jOWkXkMld0337lqEeLH7zfScJuqm5StXCGKRFbEfJa3wivHVk-0x3RChVCZSUqL89Wc5zjA9LfNkIofEg1HqHM74lPyH0PQA" 
+            <div className="relative aspect-[9/16] rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
+              <video 
+                className="w-full h-full object-cover"
+                src="/customer video/review 2.mp4" 
+                controls
+                playsInline
               />
-              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">
-                <div className="bg-primary/90 p-4 rounded-full transition-transform group-hover:scale-110">
-                  <PlayCircle className="text-on-primary text-4xl" />
-                </div>
-                <p className="mt-4 font-bold text-white text-lg">"Saved me hours of waiting at a garage."</p>
-              </div>
+            </div>
+            <div className="relative aspect-[9/16] rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
+              <video 
+                className="w-full h-full object-cover"
+                src="/customer video/review 3.mp4" 
+                controls
+                playsInline
+              />
+            </div>
+            <div className="relative aspect-[9/16] rounded-lg overflow-hidden group cursor-pointer bg-zinc-800">
+              <video 
+                className="w-full h-full object-cover"
+                src="/customer video/review 4.mp4" 
+                controls
+                playsInline
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="py-12 md:py-24 bg-surface-container-low">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="mb-8 md:mb-12">
+            <h2 className="text-3xl md:text-4xl font-extrabold">Why Choose Us</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="p-6 bg-surface-container-high rounded-lg text-center">
+              <Home className="text-primary text-4xl mx-auto mb-4" />
+              <h4 className="text-lg font-bold mb-2">Doorstep Service</h4>
+              <p className="text-on-surface-variant text-sm">Experience ultimate convenience as our mobile units reach your home or office.</p>
+            </div>
+            <div className="p-6 bg-surface-container-high rounded-lg text-center">
+              <Clock className="text-primary text-4xl mx-auto mb-4" />
+              <h4 className="text-lg font-bold mb-2">On-Time Guarantee</h4>
+              <p className="text-on-surface-variant text-sm">We value your time. Our detailers arrive exactly when scheduled, every single time.</p>
+            </div>
+            <div className="p-6 bg-surface-container-high rounded-lg text-center">
+              <Sparkles className="text-primary text-4xl mx-auto mb-4" />
+              <h4 className="text-lg font-bold mb-2">Professional Cleaning</h4>
+              <p className="text-on-surface-variant text-sm">Using pH-neutral foams and premium waxes for a swirl-free, factory finish.</p>
+            </div>
+            <div className="p-6 bg-surface-container-high rounded-lg text-center">
+              <CreditCard className="text-primary text-4xl mx-auto mb-4" />
+              <h4 className="text-lg font-bold mb-2">Affordable Pricing</h4>
+              <p className="text-on-surface-variant text-sm">Premium results without the premium markup. Transparent pricing for everyone.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="w-full rounded-t-[3rem] mt-20 bg-zinc-950 flex flex-col items-center justify-center py-12 px-6 text-center max-w-7xl mx-auto gap-6">
-        <div className="text-lg font-bold text-zinc-100 font-headline tracking-tighter">
-          SHREE CAR WASH & DETAILING
+      <footer className="w-full rounded-t-[2rem] md:rounded-t-[3rem] mt-12 md:mt-20 bg-zinc-950 flex flex-col items-center justify-center py-8 md:py-12 px-4 md:px-6 text-center max-w-7xl mx-auto gap-4 md:gap-6">
+        <div className="flex items-center gap-2">
+          <img 
+            src="/logo/logo.png" 
+            alt="Shree Car Wash Logo" 
+            className="h-8 md:h-10 w-auto"
+          />
         </div>
-        <div className="flex flex-wrap justify-center gap-8">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-sm md:text-base">
           <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#services">Services</a>
           <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#pricing">Pricing</a>
           <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#stories">Stories</a>
           <button onClick={() => handleBookClick()} className="text-zinc-500 hover:text-yellow-400 transition-colors">WhatsApp Booking</button>
         </div>
-        <div className="h-[1px] w-full max-w-md bg-white/10 my-4"></div>
-        <div className="font-manrope text-sm text-zinc-500">
+        <div className="h-[1px] w-full max-w-md bg-white/10 my-2 md:my-4"></div>
+        <div className="text-xs md:text-sm text-zinc-500">
           © 2024 SHREE CAR WASH & DETAILING. All rights reserved.
         </div>
-        <div className="flex items-center gap-2 text-zinc-500">
-          <MapPin className="w-4 h-4" />
+        <div className="flex items-center gap-2 text-xs md:text-sm text-zinc-500">
+          <MapPin className="w-3 h-3 md:w-4 md:h-4" />
           Raipur, Chhattisgarh
         </div>
       </footer>

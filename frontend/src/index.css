@@ -35,22 +35,22 @@
 
 /* Custom font families */
 .font-headline {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Sora', sans-serif;
 }
 
 .font-body {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Outfit', sans-serif;
 }
 
 .font-label {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Outfit', sans-serif;
 }
 
 /* Base styles */
 body {
   background-color: #131314;
   color: #e5e2e3;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Outfit', sans-serif;
   scroll-behavior: smooth;
   margin: 0;
 }
