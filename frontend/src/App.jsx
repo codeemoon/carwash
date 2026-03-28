@@ -494,7 +494,7 @@ function App() {
       </section>
 
       {/* Our Detailing Process */}
-      <section className="py-12 md:py-24 bg-surface-container-low">
+      <section className="py-12 md:py-24 bg-surface-container-low" id="stories">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-8 md:mb-12">Our Detailing Process</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
