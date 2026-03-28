@@ -2,11 +2,36 @@ import { useState } from 'react'
 import { 
   Menu, MessageCircle, Phone, Home, Clock, CreditCard, 
   Car, Users, Award, PlayCircle, CheckCircle, ArrowRight,
-  ChevronRight, Sparkles, MapPin
+  ChevronRight, Sparkles, MapPin, X
 } from 'lucide-react'
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isBookingOpen, setIsBookingOpen] = useState(false)
+  const [selectedPackage, setSelectedPackage] = useState('')
+  const [formData, setFormData] = useState({
+    name: '',
+    number: '',
+    carModel: '',
+    address: '',
+    landmark: ''
+  })
+
+  const handleBookClick = (packageName = '') => {
+    setSelectedPackage(packageName)
+    setIsBookingOpen(true)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const phoneNumber = '9685661519'
+    const message = `Hello Shree Car Wash,\n\nI would like to book the ${selectedPackage || 'Service'}.\n\n*Name:* ${formData.name}\n*Phone:* ${formData.number}\n*Car Model:* ${formData.carModel}\n*Address:* ${formData.address}\n*Landmark:* ${formData.landmark}\n\nPlease confirm my booking.`
+    
+    const whatsappUrl = `https://wa.me/91${phoneNumber}?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
+    setIsBookingOpen(false)
+    setFormData({ name: '', number: '', carModel: '', address: '', landmark: '' })
+  }
 
   return (
     <div className="min-h-screen bg-background text-on-surface font-body">
@@ -20,7 +45,7 @@ function App() {
             <a className="text-zinc-400 font-medium hover:text-zinc-100 transition-colors" href="#services">Services</a>
             <a className="text-zinc-400 font-medium hover:text-zinc-100 transition-colors" href="#pricing">Pricing</a>
             <a className="text-zinc-400 font-medium hover:text-zinc-100 transition-colors" href="#stories">Stories</a>
-            <button className="cta-gradient text-on-primary font-bold px-6 py-2.5 rounded-full scale-95 active:scale-90 transition-transform">
+            <button onClick={() => handleBookClick()} className="cta-gradient text-on-primary font-bold px-6 py-2.5 rounded-full scale-95 active:scale-90 transition-transform">
               WhatsApp Booking
             </button>
           </div>
@@ -35,7 +60,7 @@ function App() {
             <a className="text-zinc-400 font-medium" href="#services" onClick={() => setIsMenuOpen(false)}>Services</a>
             <a className="text-zinc-400 font-medium" href="#pricing" onClick={() => setIsMenuOpen(false)}>Pricing</a>
             <a className="text-zinc-400 font-medium" href="#stories" onClick={() => setIsMenuOpen(false)}>Stories</a>
-            <button className="cta-gradient text-on-primary font-bold px-6 py-2.5 rounded-full">
+            <button onClick={() => handleBookClick()} className="cta-gradient text-on-primary font-bold px-6 py-2.5 rounded-full">
               WhatsApp Booking
             </button>
           </div>
@@ -62,7 +87,7 @@ function App() {
               Trusted Doorstep Car Wash in Raipur. We bring the showroom shine to your driveway.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="cta-gradient text-on-primary font-bold px-10 py-5 rounded-full text-lg shadow-2xl shadow-primary/10 transition-all hover:brightness-110 flex items-center justify-center gap-2">
+              <button onClick={() => handleBookClick()} className="cta-gradient text-on-primary font-bold px-10 py-5 rounded-full text-lg shadow-2xl shadow-primary/10 transition-all hover:brightness-110 flex items-center justify-center gap-2">
                 <MessageCircle className="w-5 h-5" />
                 Book Now on WhatsApp
               </button>
@@ -163,7 +188,7 @@ function App() {
                   <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Glass Cleaning
                 </li>
               </ul>
-              <button className="w-full py-4 rounded-full border border-outline-variant text-on-surface font-bold hover:bg-surface-variant transition-colors">
+              <button onClick={() => handleBookClick('Basic Wash - ₹349')} className="w-full py-4 rounded-full border border-outline-variant text-on-surface font-bold hover:bg-surface-variant transition-colors">
                 Book Basic
               </button>
             </div>
@@ -188,7 +213,7 @@ function App() {
                   <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> Floor Mat Cleaning
                 </li>
               </ul>
-              <button className="w-full py-4 rounded-full cta-gradient text-on-primary font-bold shadow-lg shadow-primary/20 hover:brightness-110 transition-all">
+              <button onClick={() => handleBookClick('Super Wash - ₹449')} className="w-full py-4 rounded-full cta-gradient text-on-primary font-bold shadow-lg shadow-primary/20 hover:brightness-110 transition-all">
                 Book Super
               </button>
             </div>
@@ -210,7 +235,7 @@ function App() {
                   <CheckCircle className="text-primary w-5 h-5 flex-shrink-0" /> AC Vent Sanitization
                 </li>
               </ul>
-              <button className="w-full py-4 rounded-full border border-outline-variant text-on-surface font-bold hover:bg-surface-variant transition-colors">
+              <button onClick={() => handleBookClick('Premium Deluxe Wash - ₹649')} className="w-full py-4 rounded-full border border-outline-variant text-on-surface font-bold hover:bg-surface-variant transition-colors">
                 Book Deluxe
               </button>
             </div>
@@ -317,7 +342,7 @@ function App() {
           <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#services">Services</a>
           <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#pricing">Pricing</a>
           <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#stories">Stories</a>
-          <a className="text-zinc-500 hover:text-yellow-400 transition-colors" href="#">WhatsApp Booking</a>
+          <button onClick={() => handleBookClick()} className="text-zinc-500 hover:text-yellow-400 transition-colors">WhatsApp Booking</button>
         </div>
         <div className="h-[1px] w-full max-w-md bg-white/10 my-4"></div>
         <div className="font-manrope text-sm text-zinc-500">
@@ -328,6 +353,90 @@ function App() {
           Raipur, Chhattisgarh
         </div>
       </footer>
+
+      {/* Booking Modal */}
+      {isBookingOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setIsBookingOpen(false)}></div>
+          <div className="relative bg-surface-container-low p-8 rounded-2xl max-w-md w-full shadow-2xl">
+            <button 
+              onClick={() => setIsBookingOpen(false)} 
+              className="absolute top-4 right-4 text-zinc-400 hover:text-white"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <h2 className="text-2xl font-bold mb-2">Book Your Service</h2>
+            {selectedPackage && (
+              <p className="text-primary font-semibold mb-6">{selectedPackage}</p>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-2">Customer Name</label>
+                <input 
+                  type="text" 
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  placeholder="Enter your name"
+                  className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-2">Customer Number</label>
+                <input 
+                  type="tel" 
+                  required
+                  value={formData.number}
+                  onChange={(e) => setFormData({...formData, number: e.target.value})}
+                  placeholder="Enter your phone number"
+                  className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-2">Car Model</label>
+                <input 
+                  type="text" 
+                  required
+                  value={formData.carModel}
+                  onClick={() => setFormData({...formData, carModel: ''})}
+                  onChange={(e) => setFormData({...formData, carModel: e.target.value})}
+                  placeholder="e.g., Honda City, Swift, Creta"
+                  className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-2">Address</label>
+                <input 
+                  type="text" 
+                  required
+                  value={formData.address}
+                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  placeholder="Enter your full address"
+                  className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-2">Landmark</label>
+                <input 
+                  type="text" 
+                  required
+                  value={formData.landmark}
+                  onChange={(e) => setFormData({...formData, landmark: e.target.value})}
+                  placeholder="e.g., Near City Hospital"
+                  className="w-full px-4 py-3 bg-surface-container-high rounded-lg text-on-surface placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <button 
+                type="submit" 
+                className="w-full cta-gradient text-on-primary font-bold py-4 rounded-full mt-6 hover:brightness-110 transition-all flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-5 h-5" />
+                Submit via WhatsApp
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
