@@ -107,7 +107,7 @@ function App() {
     setIsBookingOpen(true)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     
     // Validate all fields
@@ -115,6 +115,37 @@ function App() {
     if (!formData.name || !formData.number || !formData.carModel || !planValue || !formData.date || !formData.time || !formData.address || !formData.landmark) {
       alert('Please fill in all fields before submitting.')
       return
+    }
+    
+    // Fire Meta Pixel Lead event
+    if (typeof fbq !== 'undefined') {
+      fbq('track', 'Lead');
+    }
+    
+    // Send data to backend
+    try {
+      const response = await fetch('http://localhost:3000/submit-lead', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.number,
+          carModel: formData.carModel,
+          plan: formData.plan,
+          date: formData.date,
+          time: formData.time,
+          address: formData.address,
+          landmark: formData.landmark,
+        }),
+      })
+      const result = await response.json()
+      if (!result.success) {
+        console.error('Failed to save lead:', result.error)
+      }
+    } catch (error) {
+      console.error('Error sending to backend:', error)
     }
     
     const phoneNumber = '9685661519'
